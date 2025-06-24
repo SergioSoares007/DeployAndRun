@@ -1,5 +1,5 @@
 ---
-title: "My 1st post"
+title: "This bitter earth"
 date: 2020-09-15T11:30:03+00:00
 # weight: 1
 # aliases: ["/first"]
@@ -35,3 +35,34 @@ editPost:
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 ---
+
+
+
+This bitter earth
+Well, what the fruit it bears
+Ooooh
+This bitter earth
+And if my life
+Is like the dust
+Oooh that hides
+The glow of a rose
+What good am I?
+Heaven only knows
+Lord, this bitter earth
+Yes can be so cold
+Today you're young
+Too soon, you're old
+But while a voice
+Within me cries
+I'm sure someone may answer my call
+And this bitter earth, oooh
+May not, oh, be so bitter after all
+This bitter earth
+Lord, this bitter earth
+What good is love
+Mmmm, that no one shares
+And if my life is like the dust
+Oooh that hides, the glow of a rose
+What good am I
+What good am I
+Heaven only knows
