@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>ExampleSite</title>
+    <title>DeployAndRun</title>
     <link>http://localhost:1313/</link>
-    <description>Recent content on ExampleSite</description>
+    <description>Recent content on DeployAndRun</description>
     <image>
-      <title>ExampleSite</title>
+      <title>DeployAndRun</title>
       <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
       <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
@@ -18,6 +18,34 @@
       <link>http://localhost:1313/posts/post1/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post1/</guid>
+      <description>Desc Text.</description>
+    </item>
+    <item>
+      <title>My 2st post</title>
+      <link>http://localhost:1313/posts/post2/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post2/</guid>
+      <description>Desc Text.</description>
+    </item>
+    <item>
+      <title>My 3st post</title>
+      <link>http://localhost:1313/posts/post3/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post3/</guid>
+      <description>Desc Text.</description>
+    </item>
+    <item>
+      <title>My 4st post</title>
+      <link>http://localhost:1313/posts/post4/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post4/</guid>
+      <description>Desc Text.</description>
+    </item>
+    <item>
+      <title>My 5st post</title>
+      <link>http://localhost:1313/posts/post5/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post5/</guid>
       <description>Desc Text.</description>
     </item>
   </channel>

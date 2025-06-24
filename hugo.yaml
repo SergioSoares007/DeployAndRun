@@ -26,6 +26,7 @@ params:
   DateFormat: "January 2, 2006"
   defaultTheme: auto # dark, light
   disableThemeToggle: false
+  #hideFooter: false
 
   ShowReadingTime: true
   ShowShareButtons: true
@@ -124,6 +125,10 @@ menu:
       name: tags
       url: /tags/
       weight: 20
+    - identifier: about
+      name: about
+      url: /about/
+      weight: 30
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
