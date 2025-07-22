@@ -18,14 +18,14 @@
       <link>http://localhost:1313/posts/post4/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post4/</guid>
-      <description>Desc Text.</description>
+      <description>Gradio and LLMs</description>
     </item>
     <item>
       <title>JWT</title>
       <link>http://localhost:1313/posts/post2/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post2/</guid>
-      <description>Desc Text.</description>
+      <description>JSON Web Token</description>
     </item>
     <item>
       <title>My 5st post</title>
@@ -46,7 +46,7 @@
       <link>http://localhost:1313/posts/post3/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post3/</guid>
-      <description>Desc Text.</description>
+      <description>LLMs</description>
     </item>
   </channel>
 </rss>
