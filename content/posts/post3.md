@@ -139,4 +139,3 @@ Large language models based on the Transformer architecture have opened new hori
 
 --- 
 
-Feel free to modify any parts and add diagrams or visuals to enhance the clarity and accessibility of the content!
