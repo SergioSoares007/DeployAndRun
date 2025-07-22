@@ -21,13 +21,6 @@
       <description>Desc Text.</description>
     </item>
     <item>
-      <title>My 3st post</title>
-      <link>http://localhost:1313/posts/post3/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post3/</guid>
-      <description>Desc Text.</description>
-    </item>
-    <item>
       <title>My 4st post</title>
       <link>http://localhost:1313/posts/post4/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
@@ -47,6 +40,13 @@
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post1/</guid>
       <description>Songwriters: Max Richter</description>
+    </item>
+    <item>
+      <title>Understanding the Foundations of Large Language Models (LLMs)</title>
+      <link>http://localhost:1313/posts/post3/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post3/</guid>
+      <description>Desc Text.</description>
     </item>
   </channel>
 </rss>
