@@ -35,6 +35,13 @@
       <description>JSON Web Token</description>
     </item>
     <item>
+      <title>RAG</title>
+      <link>http://localhost:1313/posts/post6/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post6/</guid>
+      <description>Retrieval Augmented Generation</description>
+    </item>
+    <item>
       <title>This bitter earth</title>
       <link>http://localhost:1313/posts/post1/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
