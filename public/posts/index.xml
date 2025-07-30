@@ -14,32 +14,39 @@
     <lastBuildDate>Tue, 15 Sep 2020 11:30:03 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Customizing Large Language Models</title>
+      <link>http://localhost:1313/posts/post7/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post7/</guid>
+      <description>Techniques for Customizing Large Language Models</description>
+    </item>
+    <item>
+      <title>Gradio</title>
+      <link>http://localhost:1313/posts/post4/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post4/</guid>
+      <description>Gradio and LLMs</description>
+    </item>
+    <item>
+      <title>Hugging Face</title>
+      <link>http://localhost:1313/posts/post5/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post5/</guid>
+      <description>Hugging Face</description>
+    </item>
+    <item>
       <title>JWT</title>
       <link>http://localhost:1313/posts/post2/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post2/</guid>
-      <description>Desc Text.</description>
+      <description>JSON Web Token</description>
     </item>
     <item>
-      <title>My 3st post</title>
-      <link>http://localhost:1313/posts/post3/</link>
+      <title>RAG</title>
+      <link>http://localhost:1313/posts/post6/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post3/</guid>
-      <description>Desc Text.</description>
-    </item>
-    <item>
-      <title>My 4st post</title>
-      <link>http://localhost:1313/posts/post4/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post4/</guid>
-      <description>Desc Text.</description>
-    </item>
-    <item>
-      <title>My 5st post</title>
-      <link>http://localhost:1313/posts/post5/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post5/</guid>
-      <description>Desc Text.</description>
+      <guid>http://localhost:1313/posts/post6/</guid>
+      <description>Retrieval Augmented Generation</description>
     </item>
     <item>
       <title>This bitter earth</title>
@@ -47,6 +54,13 @@
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post1/</guid>
       <description>Songwriters: Max Richter</description>
+    </item>
+    <item>
+      <title>Understanding the Foundations of Large Language Models (LLMs)</title>
+      <link>http://localhost:1313/posts/post3/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post3/</guid>
+      <description>LLMs</description>
     </item>
   </channel>
 </rss>
