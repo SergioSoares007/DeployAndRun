@@ -28,6 +28,13 @@
       <description>Gradio and LLMs</description>
     </item>
     <item>
+      <title>How to Fine-Tune a Closed Source LLM like ChatGPT</title>
+      <link>http://localhost:1313/posts/post9/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post9/</guid>
+      <description>How to Fine-Tune a Closed Source LLM like ChatGPT: A Step-by-Step Guide</description>
+    </item>
+    <item>
       <title>Hugging Face</title>
       <link>http://localhost:1313/posts/post5/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
