@@ -3,7 +3,7 @@ title: "Understanding the Foundations of Large Language Models (LLMs)"
 date: 2020-09-15T11:30:03+00:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["first"]
+tags: ["AI", "LLM", "Machine Learning"]
 author: "Me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
