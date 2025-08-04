@@ -14,6 +14,13 @@
     <lastBuildDate>Tue, 15 Sep 2020 11:30:03 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/chatgpt/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Base vs Instruct Variants</title>
+      <link>http://localhost:1313/posts/post10/</link>
+      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post10/</guid>
+      <description>Understanding Base vs Instruct Variants in Machine Learning Models</description>
+    </item>
+    <item>
       <title>Fine-Tuning ChatGPT</title>
       <link>http://localhost:1313/posts/post9/</link>
       <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>

@@ -83,5 +83,15 @@
       <guid>http://localhost:1313/posts/post3/</guid>
       <description>LLMs</description>
     </item>
+    <item>
+      <title>About Me</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;h2 id=&#34;-lifelong-learning--the-power-of-culture&#34;&gt;📚 Lifelong Learning &amp;amp; the Power of Culture&lt;/h2&gt;
+&lt;p&gt;I believe deeply in education and culture as the cornerstones of personal and societal growth.&lt;br&gt;
+Throughout my life, I&amp;rsquo;ve devoted myself to learning, study, and research — not only in formal contexts, but also in the quiet hours of personal exploration.&lt;br&gt;
+Books, ideas, history, science, technology — I see them as tools to better understand the world and to shape it for the better.&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>
