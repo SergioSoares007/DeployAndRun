@@ -1,6 +1,6 @@
 ---
 title: "Hugging Face"
-date: 2020-09-15T11:30:03+00:00
+date: 2025-02-02T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
 tags: ["AI", "LLM", "Machine Learning", "NLP","Hugging Face"]
