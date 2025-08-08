@@ -3,69 +3,58 @@ title: "About Me"
 layout: "about"
 url: "/about/"
 ---
-
-## 📚 Lifelong Learning & the Power of Culture
-
-I believe deeply in education and culture as the cornerstones of personal and societal growth.  
-Throughout my life, I've devoted myself to learning, study, and research — not only in formal contexts, but also in the quiet hours of personal exploration.  
-Books, ideas, history, science, technology — I see them as tools to better understand the world and to shape it for the better.
-
-<!-- Image placeholder -->
-<!-- ![Learning](path-to-your-image.jpg) -->
+# About Me
 
 ---
 
-## 🎻 The Violin – A Quiet Discipline
+## Belief in Education and Culture
 
-Learning to play the violin was one of the first challenges that taught me the value of discipline, patience, and subtlety.  
-The complexity of the instrument forces you to listen deeply — not just to the notes, but to yourself.  
-It’s a lifelong journey, and one that constantly reminds me that mastery lies in the details.
+I believe that education and culture are the most powerful tools to improve both the individual and society. Throughout my life, I have dedicated myself to study and research, driven by the conviction that knowledge has the power to transform the world. My journey has been one of continuous learning, exploring diverse areas to broaden my understanding and share it with others.
 
-<!-- Image placeholder -->
-<!-- ![Violin](path-to-your-image.jpg) -->
+*Image placeholder:*  
+![Education and Culture](path/to/image.jpg)
 
 ---
 
-## 🏍️ The Harley-Davidson Way
+## The Violin
 
-Riding a Harley isn’t just transport — it’s philosophy.  
-It’s the road under your wheels, the wind on your face, the mechanical heartbeat beneath you.  
-More than a machine, it’s freedom, solitude, and brotherhood wrapped into one.  
-Riding clears the mind and awakens the senses — no noise, no notifications, just you and the journey.
+The violin has been a lifelong companion in my personal journey. Learning to play was not just about music, but about patience, discipline, and emotional expression. Each note is a reflection of countless hours of practice and the joy of creating something beautiful from silence.
 
-<!-- Image placeholder -->
-<!-- ![Harley](path-to-your-image.jpg) -->
+*Image placeholder:*  
+![Violin](path/to/image.jpg)
 
 ---
 
-## ⚽ Football & Sporting Clube de Portugal
+## Harley-Davidson Spirit
 
-I’ve always loved playing football — the simplicity, the flow, the tactics.  
-But my true passion lies with **Sporting Clube de Portugal**.  
-It’s not just a club; it’s heritage, identity, resilience.  
-Whether I'm on the field or in the stands, football grounds me and connects me to something bigger than myself.
+Riding a Harley-Davidson is more than just transportation – it’s freedom, brotherhood, and the open road. It’s about feeling the wind, hearing the roar of the engine, and knowing that the journey is as important as the destination. It represents independence, adventure, and a spirit that refuses to be tamed.
 
-<!-- Image placeholder -->
-<!-- ![Sporting](path-to-your-image.jpg) -->
+*Image placeholder:*  
+![Harley-Davidson](path/to/image.jpg)
 
 ---
 
-## 🌊 The Ocean & Surf
+## Football and Sporting Clube de Portugal
 
-There’s something humbling and healing about being in the ocean.  
-Surfing, swimming, or simply floating — it reminds me of scale, of rhythm, of nature’s raw truth.  
-The sea resets everything. It reminds me to stay fluid, to adapt, and to move with purpose — not force.
+Football has been a passion of mine since childhood – both playing and watching. I especially follow Sporting Clube de Portugal, a club that represents tradition, resilience, and excellence. The game is more than sport; it’s teamwork, strategy, and pure excitement.
 
-<!-- Image placeholder -->
-<!-- ![Ocean](path-to-your-image.jpg) -->
+*Image placeholder:*  
+![Sporting Clube de Portugal](path/to/image.jpg)
 
 ---
 
-## 👧 My Daughter — My Daily Inspiration
+## The Sea and Surf
 
-Raising my daughter is the most demanding and rewarding challenge of all.  
-She’s clever, curious, and sees the world in ways I often forget to.  
-Watching her grow, ask questions, and create — it inspires me to keep learning, to keep building, and to leave something worth inheriting.
+The sea is my refuge. Whether it’s surfing, swimming, or simply being near the water, the ocean always brings me clarity and peace. Surfing in particular is a perfect balance of challenge and harmony with nature, riding the energy of the waves and feeling fully alive.
 
-<!-- Image placeholder -->
-<!-- ![Daughter](path-to-your-image.jpg) -->
+*Image placeholder:*  
+![Surf and Sea](path/to/image.jpg)
+
+---
+
+## My Daughter – My Greatest Inspiration
+
+Among all my passions and pursuits, my daughter stands above them all. She is my greatest source of motivation, inspiring me to strive for excellence, live with integrity, and never stop learning. Through her eyes, I see the future – full of possibilities and promise.
+
+*Image placeholder:*  
+![Inspiration](path/to/image.jpg)
