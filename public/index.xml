@@ -11,77 +11,105 @@
     </image>
     <generator>Hugo -- 0.147.8</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 15 Sep 2020 11:30:03 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 06 Apr 2025 23:00:03 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>REST vs. gRPC Part2</title>
+      <link>http://localhost:1313/posts/post14/</link>
+      <pubDate>Sun, 06 Apr 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post14/</guid>
+      <description>REST vs. gRPC: Understanding the Differences and Choosing the Right Protocol</description>
+    </item>
+    <item>
+      <title>REST vs. gRPC</title>
+      <link>http://localhost:1313/posts/post13/</link>
+      <pubDate>Sun, 30 Mar 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post13/</guid>
+      <description>REST vs. gRPC: Understanding the Differences and Choosing the Right Protocol</description>
+    </item>
+    <item>
+      <title>Software Architecture &amp; Technology of Large-Scale Systems</title>
+      <link>http://localhost:1313/posts/post12/</link>
+      <pubDate>Sun, 23 Mar 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post12/</guid>
+      <description>Understanding Software Architecture &amp;amp; Technology of Large-Scale Systems</description>
+    </item>
+    <item>
+      <title>Agentic AI</title>
+      <link>http://localhost:1313/posts/post11/</link>
+      <pubDate>Sun, 16 Mar 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post11/</guid>
+      <description>Understanding Agentic AI</description>
+    </item>
     <item>
       <title>Base vs Instruct Variants</title>
       <link>http://localhost:1313/posts/post10/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Sun, 09 Mar 2025 23:00:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post10/</guid>
       <description>Understanding Base vs Instruct Variants in Machine Learning Models</description>
     </item>
     <item>
-      <title>Customizing Large Language Models</title>
-      <link>http://localhost:1313/posts/post7/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post7/</guid>
-      <description>Techniques for Customizing Large Language Models</description>
-    </item>
-    <item>
       <title>Fine-Tuning ChatGPT</title>
       <link>http://localhost:1313/posts/post9/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Sun, 02 Mar 2025 23:00:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post9/</guid>
       <description>Fine-Tuning a Closed Source LLM like ChatGPT</description>
     </item>
     <item>
-      <title>Gradio</title>
-      <link>http://localhost:1313/posts/post4/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post4/</guid>
-      <description>Gradio and LLMs</description>
-    </item>
-    <item>
-      <title>Hugging Face</title>
-      <link>http://localhost:1313/posts/post5/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post5/</guid>
-      <description>Hugging Face</description>
-    </item>
-    <item>
-      <title>JWT</title>
-      <link>http://localhost:1313/posts/post2/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post2/</guid>
-      <description>JSON Web Token</description>
-    </item>
-    <item>
       <title>NLP, LLMs, LR and ML</title>
       <link>http://localhost:1313/posts/post8/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Sun, 23 Feb 2025 23:00:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post8/</guid>
       <description>Understanding NLP, LLMs, Linear Regression, and the Landscape of Machine Learning</description>
     </item>
     <item>
+      <title>Customizing Large Language Models</title>
+      <link>http://localhost:1313/posts/post7/</link>
+      <pubDate>Sun, 16 Feb 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post7/</guid>
+      <description>Techniques for Customizing Large Language Models</description>
+    </item>
+    <item>
       <title>RAG</title>
       <link>http://localhost:1313/posts/post6/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Sun, 09 Feb 2025 23:00:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post6/</guid>
       <description>Retrieval Augmented Generation</description>
     </item>
     <item>
-      <title>This bitter earth</title>
-      <link>http://localhost:1313/posts/post1/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
-      <guid>http://localhost:1313/posts/post1/</guid>
-      <description>Songwriters: Max Richter</description>
+      <title>Hugging Face</title>
+      <link>http://localhost:1313/posts/post5/</link>
+      <pubDate>Sun, 02 Feb 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post5/</guid>
+      <description>Hugging Face</description>
+    </item>
+    <item>
+      <title>Gradio</title>
+      <link>http://localhost:1313/posts/post4/</link>
+      <pubDate>Sun, 26 Jan 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post4/</guid>
+      <description>Gradio and LLMs</description>
     </item>
     <item>
       <title>Understanding the Foundations of Large Language Models (LLMs)</title>
       <link>http://localhost:1313/posts/post3/</link>
-      <pubDate>Tue, 15 Sep 2020 11:30:03 +0000</pubDate>
+      <pubDate>Sun, 19 Jan 2025 23:00:03 +0000</pubDate>
       <guid>http://localhost:1313/posts/post3/</guid>
       <description>LLMs</description>
+    </item>
+    <item>
+      <title>JWT</title>
+      <link>http://localhost:1313/posts/post2/</link>
+      <pubDate>Sun, 12 Jan 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post2/</guid>
+      <description>JSON Web Token</description>
+    </item>
+    <item>
+      <title>This bitter earth</title>
+      <link>http://localhost:1313/posts/post1/</link>
+      <pubDate>Sun, 05 Jan 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post1/</guid>
+      <description>Songwriters: Max Richter</description>
     </item>
     <item>
       <title>About Me</title>

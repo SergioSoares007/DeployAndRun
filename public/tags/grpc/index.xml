@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>GRPC on DeployAndRun</title>
+    <link>http://localhost:1313/tags/grpc/</link>
+    <description>Recent content in GRPC on DeployAndRun</description>
+    <image>
+      <title>DeployAndRun</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.147.8</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 06 Apr 2025 23:00:03 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>REST vs. gRPC Part2</title>
+      <link>http://localhost:1313/posts/post14/</link>
+      <pubDate>Sun, 06 Apr 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post14/</guid>
+      <description>REST vs. gRPC: Understanding the Differences and Choosing the Right Protocol</description>
+    </item>
+    <item>
+      <title>REST vs. gRPC</title>
+      <link>http://localhost:1313/posts/post13/</link>
+      <pubDate>Sun, 30 Mar 2025 23:00:03 +0000</pubDate>
+      <guid>http://localhost:1313/posts/post13/</guid>
+      <description>REST vs. gRPC: Understanding the Differences and Choosing the Right Protocol</description>
+    </item>
+  </channel>
+</rss>
