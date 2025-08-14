@@ -3,7 +3,7 @@ title: "Security, Security and... Security"
 date: 2025-04-13T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["SSL", "PGP", OpenSSL, RBAC, ]
+tags: ["SSL", "PGP", "OpenSSL", "RBAC" ]
 author: "Me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
