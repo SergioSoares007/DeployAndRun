@@ -3,8 +3,6 @@ title: "About Me"
 layout: "about"
 url: "/about/"
 ---
-# About Me
-
 ---
 
 ## 📚 Belief in Education and Culture
