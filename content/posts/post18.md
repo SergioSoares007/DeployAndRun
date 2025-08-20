@@ -38,19 +38,33 @@ editPost:
 # GLÁDIO
 
 Deu-me Deus o seu gládio, porque eu faça
+
 A sua santa guerra.
+
 Sagrou-me seu em honra e em desgraça,
+
 Às horas em que um frio vento passa
+
 Por sobre a fria terra.
 
+
 Pôs-me as mãos sobre os ombros e doirou-me
+
 A fronte com o olhar;
+
 E esta febre de Além, que me consome,
+
 E este querer grandeza são seu nome
+
 Dentro em mim a vibrar.
 
+
 E eu vou, e a luz do gládio erguido dá
+
 Em minha face calma.
+
 Cheio de Deus, não temo o que virá,
+
 Pois venha o que vier, nunca será
+
 Maior do que a minha alma.
