@@ -36,6 +36,7 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 # GLÁDIO
+
 Deu-me Deus o seu gládio, porque eu faça
 A sua santa guerra.
 Sagrou-me seu em honra e em desgraça,
