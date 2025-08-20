@@ -1,6 +1,6 @@
 ---
 title: "101 Sites Every System Architect and Developer Should Know"
-date: 2025-05-11T23:00:03+00:00
+date: 2025-05-18T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
 tags: ["Business Applications", "Developers"]
