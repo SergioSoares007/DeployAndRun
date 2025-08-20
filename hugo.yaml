@@ -82,8 +82,6 @@ params:
     Content: For my daughter, who will always be the best part of my story.
 
   socialIcons:
-    - name: x
-      url: "https://x.com/"
     - name: stackoverflow
       url: "https://stackoverflow.com"
     - name: github
