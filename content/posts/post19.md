@@ -209,7 +209,7 @@ How to use this list:
 
 ## API Management & Gateways (99–101)
 
-99. Kong Gateway — High-performance, extensible API gateway (OSS/Enterprise).
+99. IBM API Gateway — High-performance, extensible API gateway (OSS/Enterprise).
 100. Apigee — Google Cloud API management for security, quotas, and analytics.
 101. AWS API Gateway — Managed gateway for REST/WebSocket APIs in AWS.
 
