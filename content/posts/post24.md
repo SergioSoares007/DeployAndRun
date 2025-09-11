@@ -37,7 +37,7 @@ editPost:
 ---
 CORS on webMethods API Gateway: How to configure, test, and troubleshoot
 
-CORS is one of those things that’s invisible when it’s right and maddening when it’s wrong. If you’re exposing APIs through Software AG’s webMethods API Gateway and serving a browser-based frontend, this guide will show you how to set up CORS correctly, verify it with curl, and fix common issues fast.
+CORS is one of those things that’s invisible when it’s right and maddening when it’s wrong. If you’re exposing APIs through IBM’s webMethods API Gateway and serving a browser-based frontend, this guide will show you how to set up CORS correctly, verify it with curl, and fix common issues fast.
 
 TL;DR
 - Enable the CORS policy on your API (or as a Global Policy) in API Gateway.
