@@ -13,7 +13,7 @@ hidemeta: false
 comments: false
 description: "The Evolution of Modern Technology: From the Server Room to the Age of Intelligence"
 canonicalURL: "https://canonical.url/to/page"
-disableHLJS: true # to disable highlightjs
+disableHLJS: true # to disable highlightjs2
 disableShare: false
 disableHLJS: false
 hideSummary: false
