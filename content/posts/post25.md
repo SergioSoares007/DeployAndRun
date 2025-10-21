@@ -141,5 +141,3 @@ The challenge is not in identifying these areas, but in keeping them **aligned, 
 
 ---
 
-*Written by [Your Name]*  
-*Technology & Architecture Insights Blog*
