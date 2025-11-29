@@ -663,4 +663,3 @@ While REST, GraphQL, and gRPC each dominate in their well-defined domains, JSON-
 
 JSON-RPC is not a full API ecosystem on its own; rather, it is a **precise instrument**. For architects and developers who understand its strengths and limitations, it offers a robust foundation for remote method invocation in the modern computing landscape.
 
-If you need help generating diagrams, examples, tutorial code, or a condensed version of this article, just let me know.
