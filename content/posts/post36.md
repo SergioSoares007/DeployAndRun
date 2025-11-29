@@ -11,7 +11,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "JSON-RPC: A Complete and In-Depth Guide to the Lightweight Remote Procedure Call Protocol"
+description: "UV: The High-Performance Python Package & Project Manager Built in Rust"
 canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
