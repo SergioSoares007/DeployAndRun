@@ -35,7 +35,6 @@ editPost:
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 ---
-````markdown
 # Understanding ngrok: Secure Tunnelling, Developer Productivity and Beyond
 
 Modern software development increasingly depends on rapid feedback cycles, secure access to local workloads, and seamless integration with external cloud-based systems. Tools that allow safe exposure of local resources to the internet have therefore become a natural part of modern development workflows. Amongst all available tunnelling tools, **ngrok** remains one of the most widely adopted solutions across individual developers, teams, enterprises and platform-level automation environments.
