@@ -35,7 +35,6 @@ editPost:
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 ---
-```markdown
 # A Comprehensive Guide to Modern Authentication  
 *Mechanisms, Protocols, Standards and Best Practices*
 
