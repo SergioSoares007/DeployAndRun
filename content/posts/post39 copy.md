@@ -1,9 +1,9 @@
 ---
-title: "Connecting webMethods JDBC Adapter to a IBM Informix Database"
+title: "ngrok"
 date: 2026-01-04T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["Database", "Informix", "JDBC Adapter"]
+tags: ["ngrok", "Tunnel", "SSH"]
 author: "me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
@@ -11,7 +11,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "Running IBM Informix in Docker and Connecting webMethods JDBC Adapter"
+description: "Understanding ngrok: Secure Tunnelling, Developer Productivity and Beyond"
 canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
@@ -34,8 +34,5 @@ editPost:
     URL: "https://github.com/<path_to_repo>/content"
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
-# Running IBM Informix in Docker and Connecting webMethods JDBC Adapter
-
-
-
-
+---
+# Understanding ngrok: Secure Tunnelling, Developer Productivity and Beyond
