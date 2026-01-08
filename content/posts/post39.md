@@ -1,9 +1,9 @@
 ---
-title: "Authentication"
-date: 2025-09-14T23:00:03+00:00
+title: "Connecting webMethods JDBC Adapter to an IBM Informix Database"
+date: 2026-01-04T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
-tags: ["Authentication", "Token", "OAuth 2.0"]
+tags: ["Database", "Informix", "JDBC Adapter"]
 author: "me"
 # author: ["Me", "You"] # multiple authors
 showToc: true
@@ -11,7 +11,7 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-description: "A Comprehensive Guide to Modern Authentication"
+description: "Running IBM Informix in Docker and Connecting webMethods JDBC Adapter"
 canonicalURL: "https://canonical.url/to/page"
 disableHLJS: true # to disable highlightjs
 disableShare: false
@@ -34,522 +34,304 @@ editPost:
     URL: "https://github.com/<path_to_repo>/content"
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
----
-# A Comprehensive Guide to Modern Authentication  
-*Mechanisms, Protocols, Standards and Best Practices*
+---    
+# Running IBM Informix in Docker and Connecting webMethods JDBC Adapter
 
-Authentication is at the core of every digital interaction. Whether you're logging in to a banking app, requesting data from an API or granting temporary access to a third-party service, authentication defines *who you are* and *whether you should be allowed to proceed*. Over the past decades, authentication has evolved from simple username–password checks to sophisticated, multi-stage, cryptographically secure protocols designed to protect users and services across distributed, cloud-first environments.
+## Overview
 
-This article provides an extensive and detailed exploration of authentication mechanisms, principles and protocols. It covers traditional schemes such as **Basic Authentication**, modern token-based models including **Bearer Tokens**, **JWT**, and comprehensive delegated authorisation frameworks like **OAuth 2.0**, **OpenID Connect**, **SAML**, and enterprise-grade **SSO solutions**.
+This article documents, end‑to‑end, the setup of **IBM Informix Developer Edition** running in a **Docker container** and its successful integration with **Software AG webMethods Integration Server** using the **JDBC Adapter**.
 
-The aim is to deliver a deep technical overview suitable for developers, architects and engineering teams who need a full understanding of both legacy and modern authentication practices.
+The goal is to provide a practical, real‑world guide covering:
 
----
+* Informix installation via Docker
+* Linux host preparation and security pitfalls
+* Network and port exposure
+* JDBC driver selection and placement
+* webMethods JDBC Adapter configuration
+* Common errors and how they were resolved
 
-## Table of Contents
-
-1. Introduction to Authentication  
-2. Authentication vs Authorisation  
-3. Password-based Authentication  
-4. Basic Authentication  
-5. Digest Authentication  
-6. Token-based Authentication  
-7. Bearer Tokens  
-8. Cookies and Session-based Authentication  
-9. JSON Web Tokens (JWT)  
-10. OAuth 2.0  
-11. OpenID Connect (OIDC)  
-12. SAML and Enterprise SSO  
-13. Multi-Factor Authentication (MFA)  
-14. Passwordless Authentication  
-15. WebAuthn and FIDO2  
-16. API Keys  
-17. Mutual TLS (mTLS)  
-18. Authentication in Microservices  
-19. The Future of Authentication  
-20. Conclusion  
+This guide is based on a real troubleshooting session and reflects the issues you are *most likely* to encounter in enterprise Linux environments.
 
 ---
 
-## 1. Introduction to Authentication
+## 1. Informix Architecture Basics (Context)
 
-Authentication is the process of verifying the identity of a user, service, device or system. Although often conflated with **authorisation**, authentication is purely concerned with validating identity, not determining permissions.
+Before starting, it is important to understand a few Informix concepts:
 
-Modern applications may support multiple authentication models simultaneously: mobile, IoT devices, single-page applications (SPAs), backend APIs and B2B integrations each require different strategies.
+* **Instance**: the Informix engine (oninit)
+* **Database**: logical container for tables and schemas
+* **DBSpace**: physical storage (files/disks) where databases live
+* **sysmaster / sysadmin / sysutils**: system databases (not for business data)
 
-Authentication has several key goals:
-
-- **Confidently identify the caller**  
-- **Prevent impersonation**  
-- **Resist interception, replay or tampering**  
-- **Work across distributed environments**  
-- **Scale across millions of users or devices**  
-
-Over the past two decades, the field has evolved dramatically—from simple passwords to federated identity, biometrics and cryptographic device-bound credentials.
+Unlike some RDBMSs, Informix **requires dbspaces** before creating databases.
 
 ---
 
-## 2. Authentication vs Authorisation
+## 2. Installing Informix Using Docker
 
-Before diving into mechanisms, it's important to distinguish between:
+### 2.1 Docker Image
 
-- **Authentication** → *Who are you?*  
-- **Authorisation** → *What can you access?*  
+We used the official Informix Developer image:
 
-Many systems combine both concepts, but they are fundamentally separate.
+```bash
+docker pull ibmcom/informix-developer-database:latest
+```
+
+### 2.2 Running the Container
+
+```bash
+docker run -it --name ifx -h ifx --privileged \
+  -e LICENSE=accept \
+  -p 192.168.150.218:9088:9088 \
+  -p 192.168.150.218:9089:9089 \
+  ibmcom/informix-developer-database:latest
+```
+
+**Key points:**
+
+* Explicit IP binding avoids Docker networking ambiguities
+* Port **9088** = primary SQL listener (onsoctcp)
+* Port **9089** = DR listener
+
+---
+
+## 3. Validating Informix Inside the Container
+
+```bash
+docker exec -it ifx bash
+su - informix
+onstat -
+```
+
+Check sqlhosts:
+
+```bash
+cat /opt/ibm/informix/etc/sqlhosts
+```
 
 Example:
 
-- Logging in with your username and password → authentication  
-- Determining whether you can edit a document → authorisation  
-
-Protocols like **OAuth 2.0** specifically handle *authorisation*, while extensions like **OpenID Connect** add *authentication* capabilities.
-
----
-
-## 3. Password-based Authentication
-
-Password authentication is the oldest and still the most common mechanism. A server stores a hashed representation of a password, and validates user input during login.
-
-### Best Practices
-
-Modern password systems must:
-
-- Hash passwords using slow, adaptive hashing functions  
-  - **bcrypt**, **scrypt**, **Argon2id**  
-- Use unique salt values  
-- Apply iteration counts that increase over time  
-- Prevent credential stuffing with rate limiting  
-- Support multi-factor authentication  
-
-### Weaknesses
-
-- Passwords can be guessed, stolen or reused  
-- Users choose weak passwords  
-- Phishing remains a major vulnerability  
-
-Password authentication is widely used but rarely sufficient alone in modern systems.
-
----
-
-## 4. Basic Authentication
-
-**Basic Authentication** is one of the earliest HTTP authentication schemes. It encodes a username and password using Base64 and includes them in the `Authorization` header:
-
+```
+informix   onsoctcp   *ifx   9088
 ```
 
-Authorization: Basic dXNlcjpwYXNzd29yZA==
+---
 
+## 4. Linux Host Networking & Security
+
+### 4.1 Docker Port Visibility
+
+```bash
+docker port ifx
 ```
 
-### Characteristics
-
-- **Stateless**  
-- **Easy to implement**  
-- **Requires TLS** (otherwise credentials are exposed)  
-- Common in legacy APIs and internal systems  
-
-### Weaknesses
-
-- Credentials are sent on every request  
-- No session invalidation mechanism  
-- Cannot be revoked without changing the password  
-
-Despite its simplicity, Basic Auth should not be used without HTTPS and is unsuitable for modern distributed architectures.
-
----
-
-## 5. Digest Authentication
-
-Digest Authentication was designed to improve security over Basic Auth by hashing credentials with server-provided nonces. Instead of sending raw credentials, the client sends:
-
-- username  
-- hashed password + nonce + method + URI  
-
-### Advantages
-
-- No plaintext credential transmission  
-- Better protection against replay attacks  
-
-### Limitations
-
-- Weak by modern standards  
-- Poor support in browsers  
-- Largely obsolete in API design  
-
-Most organisations have migrated to token-based or federated authentication options instead.
-
----
-
-## 6. Token-based Authentication
-
-Token-based authentication replaces raw credentials with *short-lived tokens* representing identity. These tokens are:
-
-- Granted after login  
-- Presented to access protected resources  
-- Revocable and often scoped  
-
-### Why Tokens?
-
-- Reduce credential exposure  
-- Allow fine-grained permissions  
-- Enable SSO  
-- Work across distributed systems and microservices  
-
-Tokens may be opaque (server must validate them) or self-contained (such as JWTs).
-
----
-
-## 7. Bearer Tokens
-
-A **Bearer Token** is a token that grants access simply by being presented. Whoever "bears" it can use it.
-
-They are transmitted in the `Authorization` header:
+Expected:
 
 ```
-
-Authorization: Bearer eyJhbGciOi...
-
+9088/tcp -> 0.0.0.0:9088
 ```
 
-### Characteristics
+### 4.2 Verifying Listener
 
-- No proof of possession required  
-- Easily used in HTTP APIs  
-- Typically short-lived and issued by an auth server  
-
-### Security Concerns
-
-- Must use HTTPS  
-- Should be stored carefully  
-- Vulnerable to interception if mishandled  
-
-Bearer tokens are central to OAuth 2.0 and modern API security.
-
----
-
-## 8. Cookies and Session-based Authentication
-
-This traditional model is still dominant in web applications.
-
-### How it works
-
-1. User logs in  
-2. Server creates a session entry  
-3. Server sets a cookie with a session ID  
-4. Browser automatically sends the cookie on each request  
-
-### Advantages
-
-- Simple to implement  
-- Works seamlessly with browsers  
-- Good for classic web applications  
-
-### Weaknesses
-
-- Requires server-side session storage  
-- Hard to scale horizontally without sticky sessions  
-- Vulnerable to CSRF without proper protections  
-
-Modern SPAs often avoid server sessions in favour of tokens.
-
----
-
-## 9. JSON Web Tokens (JWT)
-
-JWTs have become a cornerstone in modern authentication.
-
-### Structure
-
-A JWT consists of **three Base64Url-encoded segments**:
-
+```bash
+ss -lntp | grep 9088
 ```
 
-header.payload.signature
+---
 
+## 5. SELinux: The Hidden Blocker
+
+On Rocky / RHEL‑based systems, **SELinux blocks Docker‑published ports** even if:
+
+* firewalld is disabled
+* ports are published correctly
+
+### 5.1 Detecting SELinux
+
+```bash
+getenforce
 ```
 
-For example:
-
-- **Header**: algorithm & token type  
-- **Payload**: claims (user ID, scopes, timestamps)  
-- **Signature**: ensures integrity  
-
-### Advantages
-
-- Self-contained  
-- Portable across services  
-- No server-side storage  
-- Easy to use in microservices  
-
-### Common Claims
-
-- `sub` — subject/user ID  
-- `iat` — issued at  
-- `exp` — expiry  
-- `iss` — issuer  
-- `aud` — audience  
-
-### Risks
-
-- Cannot be revoked unless using a token blacklist  
-- Must have short expirations  
-- Should not store sensitive data  
-
-JWTs are best used as short-lived access tokens, often paired with refresh tokens.
-
----
-
-## 10. OAuth 2.0
-
-OAuth 2.0 is an authorisation framework that allows applications to gain delegated access to protected resources without using the user's credentials.
-
-### Key Roles
-
-- **Resource Owner** — the user  
-- **Client** — the application requesting access  
-- **Authorisation Server** — issues tokens  
-- **Resource Server** — API receiving requests  
-
-### Common OAuth Flows
-
-#### 1. Authorization Code Flow  
-The most secure flow, used by web and mobile apps.
-
-#### 2. PKCE (Proof Key for Code Exchange)  
-Adds protection for public clients (SPAs, mobile apps).
-
-#### 3. Client Credentials Flow  
-Used for server-to-server or backend API integrations.
-
-#### 4. Device Code Flow  
-Designed for devices without native browsers.
-
-#### 5. Refresh Token Flow  
-Allows clients to fetch new tokens without re-authentication.
-
-### Token Types
-
-- Access Tokens  
-- Refresh Tokens  
-- ID Tokens (when using OpenID Connect)  
-
-OAuth 2.0 provides flexible building blocks for modern authentication ecosystems.
-
----
-
-## 11. OpenID Connect (OIDC)
-
-OIDC is an identity layer built on top of OAuth 2.0. While OAuth handles *authorisation*, OIDC handles **authentication**.
-
-### ID Token
-
-OIDC introduces the ID Token — a JWT that includes verified identity information about the user.
-
-Example claims:
-
-- `email`  
-- `name`  
-- `preferred_username`  
-- `picture`  
-- `updated_at`  
-
-### Why OIDC?
-
-- Standardised login flow  
-- Works across mobile, SPAs, web apps  
-- Supports SSO  
-- Widely supported (Google, Microsoft, Auth0, Okta, etc.)  
-
-OIDC is the de facto modern web authentication standard.
-
----
-
-## 12. SAML and Enterprise SSO
-
-**SAML (Security Assertion Markup Language)** is an XML-based authentication standard used primarily in enterprise environments.
-
-### Typical Flow
-
-1. User requests a corporate application  
-2. Application redirects to Identity Provider (IdP)  
-3. User authenticates  
-4. IdP issues a signed SAML Assertion  
-5. Application validates the assertion and logs in the user  
-
-### Strengths
-
-- Mature and trusted in enterprise  
-- Integrates with Active Directory  
-- Scales across many internal tools  
-
-### Weaknesses
-
-- Verbose and complex XML  
-- Not ideal for mobile-native apps  
-- Slower adoption in modern cloud architectures  
-
-Despite its age, SAML remains dominant for corporate SSO.
-
----
-
-## 13. Multi-Factor Authentication (MFA)
-
-MFA requires more than one factor from the following categories:
-
-1. **Something you know** — password  
-2. **Something you have** — phone, token  
-3. **Something you are** — biometrics  
-
-### Common MFA Methods
-
-- SMS codes (least secure)  
-- TOTP apps like Google Authenticator  
-- Hardware tokens (YubiKey)  
-- Push notifications  
-- Biometrics  
-
-MFA drastically reduces account takeover incidents.
-
----
-
-## 14. Passwordless Authentication
-
-Passwordless login eliminates the traditional password altogether.
-
-### Methods
-
-- Magic links  
-- One-time passcodes  
-- Email-based login  
-- Mobile push authentication  
-- WebAuthn/FIDO2  
-
-Passwordless reduces friction and removes the risks associated with passwords.
-
----
-
-## 15. WebAuthn and FIDO2
-
-WebAuthn is a W3C standard enabling public-key cryptography for browser authentication.
-
-### How it works
-
-- User registers a device authenticator  
-- Device generates a key pair  
-- Server stores the public key  
-- Authentication requires the private key, stored on the device  
-
-### Benefits
-
-- Phishing resistant  
-- Passwordless  
-- Cryptographically secure  
-- Device-bound credentials  
-
-WebAuthn is widely considered the future of consumer authentication.
-
----
-
-## 16. API Keys
-
-API keys are a simple authentication mechanism for machine-to-machine use.
-
-### Properties
-
-- Static or long-lived  
-- Sent via headers or query parameters  
-- Identify the client, not the user  
-
-### Weakness
-
-- Hard to rotate  
-- Often stored insecurely  
-- Limited scopes  
-
-API keys should be treated like passwords and used only for system-level integrations where simplicity is required.
-
----
-
-## 17. Mutual TLS (mTLS)
-
-mTLS authenticates *both* sides of a connection.
-
-### How it works
-
-- Client presents a certificate  
-- Server validates it  
-- Server presents a certificate  
-- Client validates it  
-- A secure, mutually authenticated TLS session is established  
-
-### Use Cases
-
-- Banking APIs  
-- Zero-trust networks  
-- Microservices in Kubernetes  
-- B2B integrations  
-
-mTLS provides strong machine authentication using cryptographic identity.
-
----
-
-## 18. Authentication in Microservices
-
-Distributed systems introduce new challenges.
-
-### Key Considerations
-
-- Services must authenticate each other  
-- Tokens must be validated efficiently  
-- Avoid session storage — prefer JWT or opaque tokens  
-- Use API gateways to centralise authentication  
-- Rate limitations and revocation lists become essential  
-
-Techniques like mTLS, JWT access tokens and service meshes (Istio, Linkerd) are popular in microservices authentication architectures.
-
----
-
-## 19. The Future of Authentication
-
-Several trends are shaping the future:
-
-### 1. Passwordless By Default  
-Large platforms are adopting passkeys and WebAuthn.
-
-### 2. Hardware-backed Credentials  
-More authentication relies on secure elements (TPM, Secure Enclave).
-
-### 3. Decentralised Identity  
-Self-sovereign identity (DID) models are emerging.
-
-### 4. Continuous and Risk-based Authentication  
-Adaptive authentication based on behaviour, device posture and location.
-
-### 5. Token Binding and Proof-of-Possession Tokens  
-Future tokens will require cryptographic proof the caller legitimately owns them — reducing the risk of token theft.
-
----
-
-## 20. Conclusion
-
-Authentication is a vast landscape, representing one of the most critical pillars of cybersecurity. From early password strategies to cryptographic web authentication, the evolution of identity verification reflects the increasing complexity and scale of modern applications.
-
-Today's systems use a blend of:
-
-- Passwords (with MFA)  
-- Sessions and cookies  
-- Bearer tokens  
-- JWTs  
-- OAuth 2.0 and OIDC  
-- SAML and enterprise SSO  
-- WebAuthn and passwordless methods  
-- mTLS for service authentication  
-
-Understanding these tools — their strengths, weaknesses and appropriate use cases — is essential for designing secure, scalable authentication architectures. As the industry moves toward passwordless and cryptographic identity, developers must continuously adapt their authentication strategies to remain secure, user-friendly and future-ready.
-
-Authentication is no longer a single feature.  
-It is an ecosystem — one that defines trust, access and the very foundation of digital interaction.
+If output is:
 
 ```
+Enforcing
+```
+
+SELinux **will block external connections**.
+
+### 5.2 Temporary Test
+
+```bash
+sudo setenforce 0
+```
+
+### 5.3 Permanent Correct Fix
+
+```bash
+sudo dnf install -y policycoreutils-python-utils
+sudo semanage port -a -t docker_port_t -p tcp 9088
+sudo semanage port -a -t docker_port_t -p tcp 9089
+sudo setenforce 1
+```
+
+After this:
+
+```bash
+telnet <docker-host-ip> 9088
+```
+
+must succeed from remote hosts.
+
+---
+
+## 6. Creating a Business Database
+
+System databases are **not** for application data.
+
+### 6.1 Creating a Database (Developer Setup)
+
+If no data dbspace exists yet:
+
+```sql
+CREATE DATABASE fnac WITH LOG;
+```
+
+Later, for production, you should create dedicated dbspaces.
+
+### 6.2 Example Table
+
+```sql
+CREATE TABLE clientes (
+  cliente_id  SERIAL PRIMARY KEY,
+  nome        VARCHAR(100) NOT NULL,
+  email       VARCHAR(150),
+  telefone    VARCHAR(30),
+  nif         CHAR(9),
+  data_criacao DATETIME YEAR TO SECOND DEFAULT CURRENT YEAR TO SECOND
+);
+```
+
+---
+
+## 7. JDBC Driver Selection (Critical)
+
+### ❌ What Does *Not* Work
+
+* `libAPI.jar`
+* Native client libraries
+
+These **do not contain** the JDBC `jdbcx` classes required by webMethods.
+
+### ✅ Correct Driver
+
+Use the **official Informix JDBC driver**:
+
+```text
+jdbc-15.0.0.2.jar
+```
+
+Downloaded from Maven Central.
+
+---
+
+## 8. Placing the Driver in webMethods
+
+### 8.1 Correct Location
+
+```text
+<IntegrationServer>/instances/default/packages/WmJDBCAdapter/code/jars/static/
+```
+
+### 8.2 Important Rules
+
+* Driver **must exist only once**
+* Do **not** duplicate jars in `code/jars/`
+* Restart Integration Server after copying
+
+---
+
+## 9. webMethods JDBC Adapter Configuration
+
+### 9.1 DataSource Mode (Required)
+
+webMethods expects a **DataSource**, not a raw Driver.
+
+```text
+DataSource Class: com.informix.jdbcx.IfxDataSource
+```
+
+### 9.2 Connection Properties
+
+| Property         | Value                      |
+| ---------------- | -------------------------- |
+| Server Name      | informix                   |
+| Network Protocol | onsoctcp                   |
+| Port             | 9088                       |
+| Database         | fnac                       |
+| User             | informix                   |
+| Password         | in4mix                     |
+| Other Properties | IfxIFXHOST=192.168.150.218 |
+
+### 9.3 Common Mistakes
+
+❌ Using `IfxDriver` as DataSource
+❌ Missing jdbcx classes
+❌ Multiple Informix jars
+❌ Using `sysmaster` for business data
+
+---
+
+## 10. Typical Errors and Root Causes
+
+| Error                      | Root Cause            |
+| -------------------------- | --------------------- |
+| Connection refused         | Docker bind / SELinux |
+| DataSource class not found | Wrong driver          |
+| Unexpected error occurred  | Hidden SQLException   |
+| INFORMIXSERVER mismatch    | Wrong Server Name     |
+
+Always check:
+
+```
+IntegrationServer/instances/<inst>/logs/server.log
+```
+
+---
+
+## 11. Final Result
+
+✅ Informix running in Docker
+✅ Secure networking resolved
+✅ Correct JDBC driver loaded
+✅ webMethods JDBC Adapter connected
+✅ Business database created
+
+---
+
+## 12. Final Recommendations
+
+* Use a **dedicated DB user** (not `informix`)
+* Avoid `rootdbs` for business data
+* Always enable logging (`WITH LOG`)
+* Document SELinux rules for future nodes
+
+---
+
+## Conclusion
+
+This setup demonstrates that Informix integrates cleanly with webMethods when:
+
+* Docker networking is understood
+* SELinux is handled correctly
+* The proper JDBC driver is used
+
+Most issues arise **outside** the database itself — in security and classloading.
+
+Once those are addressed, Informix is stable, fast, and reliable in containerized enterprise environments.
+
+---
+
+*End of document.*
+
 
