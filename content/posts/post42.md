@@ -419,6 +419,6 @@ Abstractions are powerful — but only if you know what they abstract *away*.
 
 Understanding computer systems does not make you a low-level programmer.
 It makes you a **better high-level one**.
-![alt text](image.png)
+![End-to-end system diagram](/images/system-diagram.png)
 ---
 
