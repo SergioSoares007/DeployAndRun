@@ -35,6 +35,8 @@ editPost:
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 
+---
+
 # From Local Dockerfile to Kubernetes Deployment: A Complete Step-by-Step Guide
 
 ## Introduction
