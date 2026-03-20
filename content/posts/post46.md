@@ -394,6 +394,138 @@ Understanding your data is critical:
 
 ---
 
+## 🔗 Sharing Volumes Between Containers in the Same Pod
+
+One of the **most important Kubernetes concepts** — and highly relevant for the CKAD exam — is that **containers within the same Pod can share storage using volumes**.
+
+This is a key enabler for **multi-container design patterns**.
+
+---
+
+### 🧠 Core Idea
+
+A volume is defined at the **Pod level**, which means:
+
+> 👉 Any container inside that Pod can mount and access the same volume.
+
+This allows containers to **communicate and share data through the filesystem**, without needing networking.
+
+---
+
+### 📦 Example: Shared Volume Between Containers
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shared-volume-example
+spec:
+  containers:
+  - name: writer
+    image: busybox
+    command: ["sh", "-c", "echo Hello from writer > /data/message.txt && sleep 3600"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+
+  - name: reader
+    image: busybox
+    command: ["sh", "-c", "sleep 3600"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /data
+
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+```
+
+---
+
+### 🔍 What Happens Here?
+
+* A volume (`emptyDir`) is created when the Pod starts
+* The **writer container** writes a file into `/data`
+* The **reader container** mounts the same volume and can read that file
+
+👉 Both containers see the **same filesystem content**
+
+---
+
+### 📌 Why This Is Important
+
+This pattern is widely used in real-world Kubernetes architectures:
+
+#### 1. Sidecar Pattern
+
+* Main container writes logs to a shared volume
+* Sidecar container reads and ships logs (e.g., to Elasticsearch)
+
+#### 2. Data Processing Pipelines
+
+* One container produces data
+* Another consumes and processes it
+
+#### 3. Init Containers
+
+* Init container prepares files/configuration
+* Main container uses them after startup
+
+---
+
+### ⚠️ Important Notes
+
+* Volumes are **ephemeral** if using `emptyDir`
+
+  * Data is lost when the Pod is deleted
+* All containers must reference the **same volume name**
+* Mount paths can be different across containers
+
+Example:
+
+```yaml
+volumeMounts:
+- name: shared-data
+  mountPath: /app/data   # container A
+
+- name: shared-data
+  mountPath: /var/data   # container B
+```
+
+👉 Different paths, same underlying data
+
+---
+
+### 🧠 Mental Model
+
+Think of it like:
+
+* **Volume** → shared disk
+* **Containers** → different users accessing that disk
+* **mountPath** → where each user sees the disk
+
+---
+
+### 🚀 CKAD Exam Tip
+
+If you see a question involving:
+
+* multiple containers in a Pod
+* file sharing between them
+
+👉 The answer is almost always:
+**Use a shared volume (usually `emptyDir`)**
+
+---
+
+### ✅ Key Takeaway
+
+> Containers in the same Pod can share data efficiently by mounting the same volume, enabling powerful patterns like sidecars, init containers, and inter-container communication without networking.
+
+This is one of the most fundamental building blocks of Kubernetes application design.
+
+
+---
 ### 🔐 ConfigMaps & Secrets
 
 #### ConfigMaps
