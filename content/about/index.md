@@ -44,6 +44,10 @@ Football has been a passion of mine since childhood – both playing and watchin
 ## 🌊 The Sea and Surf
 
 The sea is my refuge. Whether it’s surfing, swimming, or simply being near the water, the ocean always brings me clarity and peace. Surfing in particular is a perfect balance of challenge and harmony with nature, riding the energy of the waves and feeling fully alive.
+"Quando eu morrer voltarei para buscar
+Os instantes que não vivi junto do mar."
+
+Sophia de Mello Breyner Andresen
 
 <!-- Image placeholder -->
 <!-- ![Daughter](path-to-your-image.jpg) -->
