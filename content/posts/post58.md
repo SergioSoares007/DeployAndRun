@@ -121,7 +121,7 @@ URLs have a defined syntax, and not every character can safely appear everywhere
 Suppose we want to send:
 
 ```text
-http://mudra?user=test name
+http://sergio?user=test name
 ```
 
 The space causes a problem.
@@ -149,7 +149,7 @@ urlencode
 ## Encoding
 
 ```bash
-urlencode -m "http://mudra?user=test name"
+urlencode -m "http://sergio?user=test name"
 ```
 
 The result will contain the encoded representation of characters that require escaping.
@@ -159,7 +159,7 @@ The result will contain the encoded representation of characters that require es
 For example:
 
 ```bash
-urlencode -d 'http%3A//mudra%3Fuser=test+name'
+urlencode -d 'http%3A//sergio%3Fuser=test+name'
 ```
 
 ### Why does this matter?
