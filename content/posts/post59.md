@@ -1,6 +1,6 @@
 ---
 title: "Securing OAuth Client Credentials in webMethods Integration Server with HashiCorp Vault"
-date: 2026-09-20T23:00:03+00:00
+date: 2026-09-27T23:00:03+00:00
 # weight: 1
 # aliases: ["/first"]
 tags: ["HashiCorp", "Vault", "Secrets","webMethods"]
