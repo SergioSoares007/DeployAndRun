@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called retryApiCall that uses a REPEAT step to retry an API call up to 5 times with a 2-second interval between attempts. The retry should occur on FAILURE. Track the number of attempts and set the status to SUCCESS when the call succeeds.
+
+Insert the file in this folder the file extension should be .flow

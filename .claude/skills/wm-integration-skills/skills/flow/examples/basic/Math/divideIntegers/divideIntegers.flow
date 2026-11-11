@@ -1,0 +1,35 @@
+interface testFlows
+
+service divideInts (
+    input {
+        String num1;
+        String num2;
+    }
+    output {
+        String result;
+    }
+) {
+    INVOKE pub.math:divideInts {
+        input {
+            mapSource {
+                String num1;
+                String num2;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy num1 -> num1;
+            copy num2 -> num2;
+        }
+        output {
+            mapSource {
+                String value;
+            }
+            mapTarget {
+                String result;
+            }
+            copy value -> result;
+        }
+    }
+}

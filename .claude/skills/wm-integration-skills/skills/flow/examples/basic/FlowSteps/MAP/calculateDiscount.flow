@@ -1,0 +1,81 @@
+interface testFlows
+
+service calculateDiscount (
+    input {
+        String originalPrice;
+        String discountPercent;
+    }
+    output {
+        String discountAmount;
+        String finalPrice;
+    }
+) {
+    INVOKE pub.math:divideFloats {
+        input {
+            mapSource {
+                String discountPercent;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy discountPercent -> num1;
+            set num2 = "100";
+        }
+        output {
+            mapSource {
+                String value;
+            }
+            mapTarget {
+                String discountRate;
+            }
+            copy value -> discountRate;
+        }
+    }
+    INVOKE pub.math:multiplyFloats {
+        input {
+            mapSource {
+                String originalPrice;
+                String discountRate;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy originalPrice -> num1;
+            copy discountRate -> num2;
+        }
+        output {
+            mapSource {
+                String value;
+            }
+            mapTarget {
+                String discountAmount;
+            }
+            copy value -> discountAmount;
+        }
+    }
+    INVOKE pub.math:subtractFloats {
+        input {
+            mapSource {
+                String originalPrice;
+                String discountAmount;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy originalPrice -> num1;
+            copy discountAmount -> num2;
+        }
+        output {
+            mapSource {
+                String value;
+            }
+            mapTarget {
+                String finalPrice;
+            }
+            copy value -> finalPrice;
+        }
+    }
+}

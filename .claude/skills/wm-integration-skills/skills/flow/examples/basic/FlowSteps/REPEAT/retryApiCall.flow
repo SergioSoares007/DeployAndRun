@@ -1,0 +1,80 @@
+interface testFlows
+
+service retryApiCall (
+    input {
+        String apiEndpoint;
+        String requestData;
+    }
+    output {
+        String responseData;
+        String status;
+        Integer attemptCount;
+    }
+) {
+    MAP {
+        mapTarget {
+            Integer attemptCount;
+            String status;
+        }
+        set attemptCount = 0;
+        set status = "PENDING";
+    }
+    REPEAT {
+        count: 5
+        repeatInterval: 2
+        repeatOn: "FAILURE"
+        MAP {
+            TRANSFORM pub.math:addInts {
+                input {
+                    mapSource {
+                        Integer attemptCount;
+                    }
+                    mapTarget {
+                        Integer num1;
+                        Integer num2;
+                    }
+                    copy attemptCount -> num1;
+                    set num2 = 1;
+                }
+                output {
+                    mapSource {
+                        Integer value;
+                    }
+                    mapTarget {
+                        Integer attemptCount;
+                    }
+                    copy value -> attemptCount;
+                }
+            }
+        }
+        INVOKE pub.client:http {
+            input {
+                mapSource {
+                    String apiEndpoint;
+                    String requestData;
+                }
+                mapTarget {
+                    String url;
+                    String data;
+                }
+                copy apiEndpoint -> url;
+                copy requestData -> data;
+            }
+            output {
+                mapSource {
+                    String response;
+                }
+                mapTarget {
+                    String responseData;
+                }
+                copy response -> responseData;
+            }
+        }
+        MAP {
+            mapTarget {
+                String status;
+            }
+            set status = "SUCCESS";
+        }
+    }
+}

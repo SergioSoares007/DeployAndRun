@@ -1,0 +1,6 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called routeByOrderStatus that utilizes a SWITCH statement and does routing based on order status values (NEW, PROCESSING, SHIPPED, or default), setting appropriate action and message for each status case.
+
+Use SWITCH (orderStatus) as the switch expression — bare variable name, no percent signs, no quotes, no path notation. Each CASE arm contains a single MAP block so no SEQUENCE wrapper is needed here.
+
+Insert the file in this folder the file extension should be .flow

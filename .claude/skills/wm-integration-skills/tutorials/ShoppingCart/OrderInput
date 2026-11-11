@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<IDataXMLCoder version="1.0">
+  <record javaclass="com.wm.data.ISMemDataImpl">
+    <value name="orderId">A00500079</value>
+    <value name="customerId">CompanyXYZ</value>
+    <array name="items" type="record" depth="1">
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="productid">KCH-Q1P-M1-BRN</value>
+        <value name="itemName">Keychron Q1 Pro QMK/VIA Wireless Mechanical Keyboard</value>
+        <value name="quantity">2</value>
+        <value name="price">199.99</value>
+      </record>
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="productid">DEL-U3824DW-2024</value>
+        <value name="itemName">Dell UltraSharp 38 Curved USB-C Hub Monitor (U3824DW)</value>
+        <value name="quantity">7</value>
+        <value name="price">899.99</value>
+      </record>
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <value name="productid">CDGT-TS4-98WH</value>
+        <value name="itemName">CalDigit TS4 Thunderbolt 4 Station</value>
+        <value name="quantity">4</value>
+        <value name="price">399.95</value>
+      </record>
+    </array>
+    <value name="customerType">EMPLOYEE</value>
+  </record>
+</IDataXMLCoder>

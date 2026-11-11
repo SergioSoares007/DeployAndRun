@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called multiplyIntegers that utilizes pub.math:multiplyInts and does multiplication of two integer values, taking num1 and num2 as inputs and returning the result.
+
+Insert the file in this folder the file extension should be .flow

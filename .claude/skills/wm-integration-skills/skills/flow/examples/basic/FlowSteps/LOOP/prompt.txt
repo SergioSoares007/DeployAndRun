@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called processOrderItems that uses a LOOP step to iterate over an items recordList. For each item, calculate the line total by multiplying quantity and price, then add it to a running totalAmount. Also increment an itemCount for each item processed.
+
+Insert the file in this folder the file extension should be .flow

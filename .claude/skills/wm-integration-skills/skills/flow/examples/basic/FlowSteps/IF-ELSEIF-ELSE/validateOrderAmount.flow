@@ -1,0 +1,52 @@
+interface testFlows
+
+service validateOrderAmount (
+    input {
+        Double orderAmount;
+    }
+    output {
+        String validationStatus;
+        String message;
+    }
+) {
+    IF (orderAmount > 1000) {
+        MAP {
+            mapTarget {
+                String validationStatus;
+                String message;
+            }
+            set validationStatus = "APPROVED";
+            set message = "High value order approved";
+        }
+    }
+    ELSEIF (orderAmount > 100 && orderAmount <= 1000) {
+        MAP {
+            mapTarget {
+                String validationStatus;
+                String message;
+            }
+            set validationStatus = "APPROVED";
+            set message = "Standard order approved";
+        }
+    }
+    ELSEIF (orderAmount > 0 && orderAmount <= 100) {
+        MAP {
+            mapTarget {
+                String validationStatus;
+                String message;
+            }
+            set validationStatus = "PENDING";
+            set message = "Low value order requires review";
+        }
+    }
+    ELSE {
+        MAP {
+            mapTarget {
+                String validationStatus;
+                String message;
+            }
+            set validationStatus = "REJECTED";
+            set message = "Invalid order amount";
+        }
+    }
+}

@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called breakOnThreshold that utilizes a DO-UNTIL loop with a BREAK statement and does early loop termination when a counter reaches a specified threshold value, using pub.math:addInts to increment the counter and pub.math:subtractInts to calculate the difference for numeric comparison (since FSL conditions compare strings lexicographically).
+
+Insert the file in this folder the file extension should be .flow

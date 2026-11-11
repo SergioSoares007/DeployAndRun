@@ -1,0 +1,41 @@
+{
+  "folder": "SHOPPING_CART",
+  "description": [
+    "Custom shopping cart domain services for managing order discounts and customer pricing."
+  ],
+  "total_elements": 1,
+  "elements": [
+    {
+      "name": "orders:applyDiscount",
+      "element_type": "service",
+      "description": [
+        "Applies customer-specific discounts to order totals based on customer type (VIP, PREFERRED, or EMPLOYEE)."
+      ],
+      "input_parameters": [
+        {
+          "name": "customerType",
+          "type": "String",
+          "description": [
+            "The classification of the customer determining the discount rate to apply. Valid values include VIP (20% discount), PREFERRED (10% discount), or EMPLOYEE (7% discount)."
+          ]
+        },
+        {
+          "name": "orderTotal",
+          "type": "String",
+          "description": [
+            "The original total amount of the order before any discounts are applied."
+          ]
+        }
+      ],
+      "output_parameters": [
+        {
+          "name": "orderTotalAfterDiscount",
+          "type": "String",
+          "description": [
+            "The final order total after the appropriate customer discount has been subtracted from the original order total."
+          ]
+        }
+      ]
+    }
+  ]
+}

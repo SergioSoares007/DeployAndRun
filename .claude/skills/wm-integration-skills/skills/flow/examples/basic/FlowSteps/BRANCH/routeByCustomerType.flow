@@ -1,0 +1,72 @@
+interface testFlows
+
+service routeByCustomerType (
+    input {
+        String customerType;
+        Double orderAmount;
+    }
+    output {
+        String discountLevel;
+        String message;
+    }
+) {
+    BRANCH {
+        switch: "/customerType"
+        evaluateLabels: false
+        SEQUENCE {
+            label: "VIP"
+            MAP {
+                mapTarget {
+                    String discountLevel;
+                    String message;
+                }
+                set discountLevel = "PREMIUM";
+                set message = "VIP customer receives premium discount";
+            }
+        }
+        SEQUENCE {
+            label: "CORPORATE"
+            MAP {
+                mapTarget {
+                    String discountLevel;
+                    String message;
+                }
+                set discountLevel = "BUSINESS";
+                set message = "Corporate customer receives business discount";
+            }
+        }
+        SEQUENCE {
+            label: "STANDARD"
+            MAP {
+                mapTarget {
+                    String discountLevel;
+                    String message;
+                }
+                set discountLevel = "REGULAR";
+                set message = "Standard customer receives regular discount";
+            }
+        }
+        SEQUENCE {
+            label: "$null"
+            MAP {
+                mapTarget {
+                    String discountLevel;
+                    String message;
+                }
+                set discountLevel = "NONE";
+                set message = "Customer type not provided";
+            }
+        }
+        SEQUENCE {
+            label: "$default"
+            MAP {
+                mapTarget {
+                    String discountLevel;
+                    String message;
+                }
+                set discountLevel = "BASIC";
+                set message = "Unknown customer type receives basic discount";
+            }
+        }
+    }
+}

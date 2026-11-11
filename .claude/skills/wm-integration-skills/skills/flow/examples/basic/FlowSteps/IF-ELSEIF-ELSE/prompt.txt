@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called validateOrderAmount that utilizes IF, ELSEIF, and ELSE statements and does validation of order amounts with different approval levels based on the amount value (>1000 for high value, >100 for standard, >0 for pending review, else rejected).
+
+Insert the file in this folder the file extension should be .flow

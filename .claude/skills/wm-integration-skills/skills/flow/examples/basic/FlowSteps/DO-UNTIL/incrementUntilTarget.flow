@@ -1,0 +1,47 @@
+interface testFlows
+
+service incrementUntilTarget (
+    input {
+        String targetValue;
+    }
+    output {
+        String counter;
+        String message;
+    }
+) {
+    MAP {
+        set counter = "0";
+        set increment = "1";
+    }
+    DO {
+        maxIteration: 100
+        SEQUENCE {
+            INVOKE pub.math:addInts {
+                input {
+                    mapSource {
+                        String counter;
+                        String increment;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy counter -> num1;
+                    copy increment -> num2;
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String counter;
+                    }
+                    copy value -> counter;
+                }
+            }
+        }
+    } UNTIL (counter >= targetValue)
+    MAP {
+        set message = "Target value reached";
+    }
+}

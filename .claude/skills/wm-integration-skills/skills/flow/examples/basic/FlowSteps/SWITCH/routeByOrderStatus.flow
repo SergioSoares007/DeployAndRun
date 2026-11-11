@@ -1,0 +1,50 @@
+interface testFlows
+
+service routeByOrderStatus (
+    input {
+        String orderStatus;
+    }
+    output {
+        String action;
+        String message;
+    }
+) {
+    SWITCH (orderStatus) {
+        CASE "NEW" :
+            MAP {
+                mapTarget {
+                    String action;
+                    String message;
+                }
+                set action = "CREATE";
+                set message = "Create a new order record";
+            }
+        CASE "PROCESSING" :
+            MAP {
+                mapTarget {
+                    String action;
+                    String message;
+                }
+                set action = "UPDATE";
+                set message = "Update the order as in progress";
+            }
+        CASE "SHIPPED" :
+            MAP {
+                mapTarget {
+                    String action;
+                    String message;
+                }
+                set action = "NOTIFY";
+                set message = "Notify customer that the order has shipped";
+            }
+        CASE "$default" :
+            MAP {
+                mapTarget {
+                    String action;
+                    String message;
+                }
+                set action = "REVIEW";
+                set message = "Review the order status manually";
+            }
+    }
+}

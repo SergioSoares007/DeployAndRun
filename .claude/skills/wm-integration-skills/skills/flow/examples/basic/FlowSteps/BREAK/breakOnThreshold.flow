@@ -1,0 +1,70 @@
+interface testFlows
+
+service breakOnThreshold (
+    input {
+        String threshold;
+    }
+    output {
+        String counter;
+        String breakMessage;
+        String one;
+    }
+) {
+    MAP {
+        set counter = "0";
+        set breakMessage = "Loop terminated early due to threshold";
+        set one = "1";
+    }
+    DO {
+        maxIteration: 100
+        INVOKE pub.math:addInts {
+            input {
+                mapSource {
+                    String counter;
+                    String one;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy counter -> num1;
+                copy one -> num2;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String counter;
+                }
+                copy value -> counter;
+            }
+        }
+        INVOKE pub.math:subtractInts {
+            input {
+                mapSource {
+                    String counter;
+                    String threshold;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy counter -> num1;
+                copy threshold -> num2;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String diff;
+                }
+                copy value -> diff;
+            }
+        }
+        IF (diff >= "0") {
+            BREAK
+        }
+    } UNTIL (counter == "100")
+}

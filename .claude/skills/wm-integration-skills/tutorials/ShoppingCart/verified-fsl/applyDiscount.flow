@@ -1,0 +1,90 @@
+interface orders
+service applyDiscount (
+    input {
+        String customerType {
+            required: false;
+        };
+        String orderTotal {
+            allowNull: false;
+        };
+    }
+    output {
+        String orderTotalAfterDiscount;
+    }
+)
+{
+    MAP {
+        mapTarget {
+            String discountApplied;
+            String vipDiscount;
+            String preferredDiscount;
+            String employeeDiscount;
+        }
+        set discountApplied = "0.0";
+        set vipDiscount = "0.2";
+        set preferredDiscount = "0.1";
+        set employeeDiscount = "0.07";
+    }
+    IF (customerType=="VIP") {
+        INVOKE pub.math:multiplyFloats {
+            input {
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy orderTotal -> num1;
+                copy vipDiscount -> num2;
+            }
+            output {
+                mapTarget {
+                    String discountApplied;
+                }
+                copy `value` -> discountApplied;
+            }
+        }
+    } ELSEIF (%customerType%=="PREFERRED") {
+        INVOKE pub.math:multiplyFloats {
+            input {
+                copy preferredDiscount -> num2;
+                copy orderTotal -> num1;
+            }
+            output {
+                mapTarget {
+                    String discountApplied;
+                }
+                copy `value` -> discountApplied;
+            }
+        }
+    } ELSEIF (%customerType%=="EMPLOYEE") {
+        INVOKE pub.math:multiplyFloats {
+            input {
+                copy employeeDiscount -> num2;
+                copy orderTotal -> num1;
+            }
+            output {
+                mapTarget {
+                    String discountApplied;
+                }
+                copy `value` -> discountApplied;
+            }
+        }
+    }
+    INVOKE pub.math:subtractFloats {
+        input {
+            drop vipDiscount;
+            drop preferredDiscount;
+            drop employeeDiscount;
+            copy orderTotal -> num1;
+            copy discountApplied -> num2;
+            drop `value`;
+        }
+        output {
+            mapTarget {
+                String orderTotalAfterDiscount;
+            }
+            copy `value` -> orderTotalAfterDiscount;
+            drop num1;
+            drop num2;
+        }
+    }
+}

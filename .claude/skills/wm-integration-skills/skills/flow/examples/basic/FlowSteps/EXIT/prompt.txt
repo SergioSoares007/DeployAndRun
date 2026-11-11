@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called handleCriticalError that uses an EXIT step to terminate the flow when a CRITICAL severity error is encountered. For HIGH severity errors, log the error and continue execution. For other severities, handle normally with an info status.
+
+Insert the file in this folder the file extension should be .flow

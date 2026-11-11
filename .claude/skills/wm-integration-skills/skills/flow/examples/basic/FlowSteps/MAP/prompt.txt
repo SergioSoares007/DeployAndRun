@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called calculateDiscount that utilizes MAP operations and does calculation of discount amount and final price from an original price and discount percentage, using pub.math:divideFloats, pub.math:multiplyFloats, and pub.math:subtractFloats.
+
+Insert the file in this folder the file extension should be .flow

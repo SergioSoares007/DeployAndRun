@@ -1,0 +1,63 @@
+interface testFlows
+
+service handleCriticalError (
+    input {
+        String errorCode;
+        String errorMessage;
+        String severity;
+    }
+    output {
+        String status;
+        String finalMessage;
+    }
+) {
+    IF (severity == "CRITICAL") {
+        INVOKE pub.flow:debugLog {
+            input {
+                mapSource {
+                    String errorMessage;
+                }
+                mapTarget {
+                    String message;
+                }
+                copy errorMessage -> message;
+            }
+        }
+        EXIT {
+            exitFrom: "$flow"
+            signal: "FAILURE"
+            failureMessage: "Critical error encountered - terminating flow"
+        }
+    }
+    IF (%severity% == "HIGH") {
+        INVOKE pub.flow:debugLog {
+            input {
+                mapSource {
+                    String errorMessage;
+                }
+                mapTarget {
+                    String message;
+                }
+                copy errorMessage -> message;
+            }
+        }
+        MAP {
+            mapTarget {
+                String status;
+                String finalMessage;
+            }
+            set status = "WARNING";
+            set finalMessage = "High severity error logged but continuing execution";
+        }
+    }
+    ELSE {
+        MAP {
+            mapTarget {
+                String status;
+                String finalMessage;
+            }
+            set status = "INFO";
+            set finalMessage = "Error logged and handled successfully";
+        }
+    }
+}

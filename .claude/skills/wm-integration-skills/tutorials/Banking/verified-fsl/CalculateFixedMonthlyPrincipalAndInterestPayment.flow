@@ -1,0 +1,265 @@
+interface Loans
+
+service CalculateFixedMonthlyPrincipalAndInterestPayment (
+    input {
+        String loanAmount {
+            allowNull: false;
+        };
+        String monthlyInterestRate {
+            allowNull: false;
+        };
+        String totalMonths {
+            allowNull: false;
+        };
+    }
+    output {
+        String payment;
+    }
+)
+{
+    MAP {
+        TRANSFORM pub.math:toNumber {
+            input {
+                mapSource {
+                    String monthlyInterestRate;
+                }
+                mapTarget {
+                    String num;
+                    String convertAs;
+                }
+                copy monthlyInterestRate -> num;
+                set convertAs = "java.lang.Double";
+            }
+            output {
+                mapSource {
+                    Double num;
+                }
+                mapTarget {
+                    Double monthlyInterestRateNum;
+                }
+                copy num -> monthlyInterestRateNum;
+            }
+        }
+    }
+    IF (%monthlyInterestRateNum% != 0.0) {
+        MAP {
+            comment: "The baseline for the compounding growth calculation"
+            TRANSFORM pub.math:addFloats {
+                input {
+                    mapSource {
+                        String monthlyInterestRate;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy monthlyInterestRate -> num1;
+                    set num2 = "1";
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String baseValue;
+                    }
+                    copy `value` -> baseValue;
+                }
+            }
+        }
+        MAP {
+            comment: "Growth Factor"
+            TRANSFORM Loans:raiseToPower {
+                input {
+                    mapSource {
+                        String baseValue;
+                        String totalMonths;
+                    }
+                    mapTarget {
+                        String base;
+                        String exponent;
+                    }
+                    copy baseValue -> base;
+                    copy totalMonths -> exponent;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String growthFactor;
+                    }
+                    copy `value` -> growthFactor;
+                }
+            }
+        }
+        MAP {
+            comment: "Compounded interest factor"
+            TRANSFORM pub.math:multiplyFloats {
+                input {
+                    mapSource {
+                        String monthlyInterestRate;
+                        String growthFactor;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy monthlyInterestRate -> num1;
+                    copy growthFactor -> num2;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String compoundedInterestFactor;
+                    }
+                    copy `value` -> compoundedInterestFactor;
+                }
+            }
+        }
+        MAP {
+            comment: "Compounded growth offset"
+            TRANSFORM pub.math:subtractFloats {
+                input {
+                    mapSource {
+                        String growthFactor;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy growthFactor -> num1;
+                    set num2 = "1";
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String compoundedGrowthOffset;
+                    }
+                    copy `value` -> compoundedGrowthOffset;
+                }
+            }
+        }
+        MAP {
+            comment: "Payment factor"
+            TRANSFORM pub.math:divideFloats {
+                input {
+                    mapSource {
+                        String compoundedInterestFactor;
+                        String compoundedGrowthOffset;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy compoundedInterestFactor -> num1;
+                    copy compoundedGrowthOffset -> num2;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String primaryInterestCoefficient;
+                    }
+                    copy `value` -> primaryInterestCoefficient;
+                }
+            }
+        }
+        MAP {
+            comment: "The unrounded monthly cost"
+            TRANSFORM pub.math:multiplyFloats {
+                input {
+                    mapSource {
+                        String loanAmount;
+                        String primaryInterestCoefficient;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy loanAmount -> num1;
+                    copy primaryInterestCoefficient -> num2;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String rawMonthlyPayment;
+                    }
+                    copy `value` -> rawMonthlyPayment;
+                }
+            }
+        }
+    }
+    ELSE {
+        MAP {
+            comment: "Simple calculation with no interest"
+            TRANSFORM pub.math:divideFloats {
+                input {
+                    mapSource {
+                        String loanAmount;
+                        String totalMonths;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy loanAmount -> num1;
+                    copy totalMonths -> num2;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String rawMonthlyPayment;
+                    }
+                    copy `value` -> rawMonthlyPayment;
+                }
+            }
+        }
+    }
+    MAP {
+        comment: "Final rounding and cleanup"
+        TRANSFORM pub.math:roundNumber {
+            input {
+                mapSource {
+                    String rawMonthlyPayment;
+                }
+                mapTarget {
+                    String num;
+                    String numberOfDigits;
+                    String roundingMode;
+                }
+                copy rawMonthlyPayment -> num;
+                set numberOfDigits = "2";
+                set roundingMode = "RoundHalfUp";
+            }
+            output {
+                mapSource {
+                    String roundedNumber;
+                }
+                mapTarget {
+                    String payment;
+                }
+                copy roundedNumber -> payment;
+            }
+        }
+        drop monthlyInterestRateNum;
+        drop loanAmount;
+        drop monthlyInterestRate;
+        drop totalMonths;
+        drop baseValue;
+        drop growthFactor;
+        drop compoundedInterestFactor;
+        drop compoundedGrowthOffset;
+        drop primaryInterestCoefficient;
+        drop rawMonthlyPayment;
+    }
+}

@@ -1,0 +1,61 @@
+interface testFlows
+
+service whileLoopDouble (
+    input {
+        String X;
+    }
+    output {
+        String Y;
+    }
+) {
+    MAP {
+        set Y = "0";
+        set counter = "0";
+    }
+    WHILE (counter < X) {
+        INVOKE pub.math:addInts {
+            input {
+                mapSource {
+                    String Y;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy Y -> num1;
+                set num2 = "2";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String Y;
+                }
+                copy value -> Y;
+            }
+        }
+        INVOKE pub.math:addInts {
+            input {
+                mapSource {
+                    String counter;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy counter -> num1;
+                set num2 = "1";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String counter;
+                }
+                copy value -> counter;
+            }
+        }
+    }
+}

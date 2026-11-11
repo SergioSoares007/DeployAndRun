@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called tryCatchExample that utilizes TRY-CATCH-FINALLY blocks and does division of two integers with error handling for division errors, using pub.math:divideInts, pub.flow:getLastError, and pub.flow:debugLog.
+
+Insert the file in this folder the file extension should be .flow

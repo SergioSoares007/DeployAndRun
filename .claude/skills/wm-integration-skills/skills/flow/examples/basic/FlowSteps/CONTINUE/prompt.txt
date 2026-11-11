@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called continueSkipZeroPrices that utilizes a DO-UNTIL loop with a CONTINUE statement and does skipping of a specific iteration (when currentCount equals 2) while processing a counter up to maxCount, using pub.math:addInts to increment counters and demonstrating how CONTINUE skips the remaining statements in the current iteration.
+
+Insert the file in this folder the file extension should be .flow

@@ -1,0 +1,154 @@
+interface exchange
+
+service GetExchangeRates (
+    input {
+        String baseCurrency {
+            required: false;
+            comment: "The anchor or point of reference for the exchange rates. If left blank, it will default to USD.";
+        };
+        String targetCurrency {
+            required: false;
+            comment: "The specific currency code you want to retrieve the rate for. If left blank, rates for all available currencies will be returned.";
+        };
+    }
+    output {
+        recordList exchangeRates {
+            comment: "A list of currency conversion multipliers relative to the base currency.";
+        };
+    }
+)
+properties {
+    comment: "This service retrieves a list of current foreign exchange rates relative to a specified anchor currency, defaulting to USD if no base currency is provided. It allows users to optionally filter the results down to a single destination currency or return the entire collection of available currency pairs. The resulting data set is returned as a structured document list designed for seamless downstream mapping and conversions.";
+}
+{
+    IF (baseCurrency == $null) {
+        MAP {
+            mapTarget {
+                String baseCurrency;
+            }
+            set baseCurrency = "USD";
+        }
+    }
+    MAP {
+        mapTarget {
+            String baseUrl;
+        }
+        set baseUrl = "https://api.frankfurter.dev/v2/rates";
+    }
+    MAP {
+        TRANSFORM pub.string:concat {
+            input {
+                mapSource {
+                    String baseUrl;
+                }
+                mapTarget {
+                    String inString1;
+                    String inString2;
+                }
+                copy baseUrl -> inString1;
+                set inString2 = "?base=%baseCurrency%";
+            }
+            output {
+                mapSource {
+                    String `value`;
+                }
+                mapTarget {
+                    String baseUrl;
+                }
+                copy `value` -> baseUrl;
+            }
+        }
+    }
+    IF (targetCurrency != $null) {
+        MAP {
+            TRANSFORM pub.string:concat {
+                input {
+                    mapSource {
+                        String baseUrl;
+                    }
+                    mapTarget {
+                        String inString1;
+                        String inString2;
+                    }
+                    copy baseUrl -> inString1;
+                    set inString2 = "&quotes=%targetCurrency%";
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        String baseUrl;
+                    }
+                    copy `value` -> baseUrl;
+                }
+            }
+        }
+    }
+    INVOKE pub.client:http {
+        input {
+            mapSource {
+                String baseUrl;
+            }
+            mapTarget {
+                String url;
+                String method;
+            }
+            copy baseUrl -> url;
+            set method = "get";
+        }
+    }
+    INVOKE pub.string:bytesToString {
+        input {
+            mapSource {
+                record body {
+                    byte[] bytes;
+                };
+            }
+            mapTarget {
+                byte[] bytes;
+            }
+            copy body/bytes -> bytes;
+        }
+        output {
+            mapSource {
+                String string;
+            }
+            mapTarget {
+                String output;
+            }
+            copy string -> output;
+        }
+    }
+    INVOKE pub.json:jsonStringToDocument {
+        input {
+            mapSource {
+                String output;
+            }
+            mapTarget {
+                String jsonString;
+            }
+            copy output -> jsonString;
+        }
+        output {
+            mapSource {
+                record `document`;
+            }
+            mapTarget {
+                recordList exchangeRates;
+            }
+            copy `document` -> exchangeRates;
+            drop jsonString;
+            drop bytes;
+            drop url;
+            drop method;
+            drop output;
+            drop baseUrl;
+            drop encodedURL;
+            drop header;
+            drop body;
+            drop string;
+            drop `document`;
+        }
+    }
+}

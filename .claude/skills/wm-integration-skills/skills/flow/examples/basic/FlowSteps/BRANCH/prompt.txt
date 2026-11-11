@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called routeByCustomerType that utilizes a BRANCH step and does routing based on customer type values (VIP, CORPORATE, STANDARD, or default), setting appropriate discount level and message for each customer type.
+
+Insert the file in this folder the file extension should be .flow

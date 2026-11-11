@@ -1,0 +1,72 @@
+interface testFlows
+
+service continueSkipZeroPrices (
+    input {
+        String maxCount;
+    }
+    output {
+        String processedCount;
+        String currentCount;
+        String skippedMessage;
+        String one;
+    }
+) {
+    MAP {
+        set processedCount = "0";
+        set currentCount = "0";
+        set skippedMessage = "Skipped count 2";
+        set one = "1";
+    }
+    DO {
+        maxIteration: 100
+        INVOKE pub.math:addInts {
+            input {
+                mapSource {
+                    String currentCount;
+                    String one;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy currentCount -> num1;
+                copy one -> num2;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String currentCount;
+                }
+                copy value -> currentCount;
+            }
+        }
+        IF (currentCount == "2") {
+            CONTINUE
+        }
+        INVOKE pub.math:addInts {
+            input {
+                mapSource {
+                    String processedCount;
+                    String one;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy processedCount -> num1;
+                copy one -> num2;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String processedCount;
+                }
+                copy value -> processedCount;
+            }
+        }
+    } UNTIL (currentCount >= maxCount)
+}

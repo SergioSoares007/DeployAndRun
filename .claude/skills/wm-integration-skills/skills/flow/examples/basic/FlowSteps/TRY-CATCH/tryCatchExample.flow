@@ -1,0 +1,88 @@
+interface testFlows
+
+service tryCatchExample (
+    input {
+        String dividend;
+        String divisor;
+    }
+    output {
+        String result;
+        String status;
+        String errorMessage;
+    }
+) {
+    TRY {
+        INVOKE pub.math:divideInts {
+            input {
+                mapSource {
+                    String dividend;
+                    String divisor;
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy dividend -> num1;
+                copy divisor -> num2;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String result;
+                }
+                copy value -> result;
+            }
+        }
+        MAP {
+            mapTarget {
+                String status;
+            }
+            set status = "SUCCESS";
+        }
+    }
+    CATCH {
+        INVOKE pub.flow:getLastError {
+            output {
+                mapSource {
+                    record lastError {
+                        String message;
+                        String error;
+                    };
+                }
+                mapTarget {
+                    String errorMessage;
+                }
+                copy lastError/message -> errorMessage;
+            }
+        }
+        MAP {
+            mapTarget {
+                String status;
+            }
+            set status = "ERROR";
+        }
+        INVOKE pub.flow:debugLog {
+            input {
+                mapSource {
+                    String errorMessage;
+                }
+                mapTarget {
+                    String message;
+                }
+                copy errorMessage -> message;
+            }
+        }
+    }
+    FINALLY {
+        INVOKE pub.flow:debugLog {
+            input {
+                mapTarget {
+                    String message;
+                }
+                set message = "Division operation completed";
+            }
+        }
+    }
+}

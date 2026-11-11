@@ -1,0 +1,169 @@
+interface orders
+service processOrder (
+    input {
+        String orderId {
+            allowNull: false;
+        };
+        String customerId {
+            allowNull: false;
+        };
+        recordList items {
+            allowUnspecifiedFields: true;
+        } {
+            String productid {
+                allowNull: false;
+            };
+            String itemName;
+            String quantity {
+                allowNull: false;
+            };
+            String price {
+                allowNull: false;
+            };
+        };
+        String customerType {
+            required: false;
+        };
+    }
+    output {
+        String orderTotalBeforeDiscount;
+        String discountApplied;
+        String orderTotal;
+        String orderStatus;
+        String message;
+    }
+)
+{
+    MAP {
+        mapTarget {
+            String discountApplied;
+            String orderTotal;
+        }
+        set discountApplied = "0.0";
+        set orderTotal = "0.0";
+    }
+    LOOP {
+        inputArray: "/items"
+        maxThreads: "1"
+        parallelErrorHandling: "reportError"
+        INVOKE pub.math:multiplyFloats {
+            input {
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy items/quantity -> num1;
+                copy items/price -> num2;
+            }
+            output {
+                mapTarget {
+                    String lineTotal;
+                }
+                copy `value` -> lineTotal;
+            }
+        }
+        INVOKE pub.math:addFloats {
+            input {
+                copy lineTotal -> num1;
+                copy orderTotal -> num2;
+            }
+            output {
+                mapTarget {
+                    String orderTotal;
+                }
+                copy `value` -> orderTotal;
+            }
+        }
+    }
+    MAP {
+        mapTarget {
+            String orderTotalBeforeDiscount;
+        }
+        copy orderTotal -> orderTotalBeforeDiscount;
+    }
+    INVOKE orders:applyDiscount {
+        input {
+            copy customerType -> customerType;
+            copy orderTotal -> orderTotal;
+        }
+        output {
+            mapTarget {
+                String orderTotal;
+            }
+            copy orderTotalAfterDiscount -> orderTotal;
+        }
+    }
+    MAP {
+        drop num1;
+        drop num2;
+        drop orderTotalAfterDiscount;
+        drop lineTotal;
+        drop `value`;
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String orderTotal;
+                }
+                mapTarget {
+                    String `pattern`;
+                    String num;
+                }
+                set `pattern` = "$#,##0.00";
+                copy orderTotal -> num;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String orderTotal;
+                }
+                copy `value` -> orderTotal;
+            }
+        }
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String discountApplied;
+                }
+                mapTarget {
+                    String `pattern`;
+                    String num;
+                }
+                set `pattern` = "$#,##0.00";
+                copy discountApplied -> num;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String discountApplied;
+                }
+                copy `value` -> discountApplied;
+            }
+        }
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String orderTotalBeforeDiscount;
+                }
+                mapTarget {
+                    String num;
+                    String `pattern`;
+                }
+                copy orderTotalBeforeDiscount -> num;
+                set `pattern` = "$#,##0.00";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String orderTotalBeforeDiscount;
+                }
+                copy `value` -> orderTotalBeforeDiscount;
+            }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called incrementUntilTarget that utilizes a DO-UNTIL loop and does incrementing a counter until it reaches a target value, using pub.math:addInts to increment the counter by 1 each iteration.
+
+Insert the file in this folder the file extension should be .flow

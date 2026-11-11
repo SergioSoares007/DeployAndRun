@@ -1,0 +1,800 @@
+interface Loans
+service AmortizationCalculator (
+    input {
+        String loanAmount {
+            allowNull: false;
+            comment: "The total initial sum of money borrowed or the starting balance of the loan before any payments are applied.";
+        };
+        String interestRate {
+            comment: "The nominal yearly interest percentage charged by the lender (which the AI-assisted service will dynamically convert to a monthly fractional rate for period calculations).";
+        };
+        String termYears {
+            comment: "The overall lifespan of the loan expressed in years, representing the total operational horizon (which the service will translate into total installment months).";
+        };
+    }
+    output {
+        recordList AmortizationSchedule {
+            comment: """
+              For every month the loan is active, the engine will dynamically generate a single line item tracking the following five properties:
+              Payment Number
+              Payment Amount
+              Interest Amount
+              Principal Amount
+              Ending Balance
+              """;
+        };
+        String fixedMonthlyPayment {
+            comment: "The baseline regular amount the borrower must pay during each individual installment period to successfully amortize the debt.";
+        };
+        String totalInterestPaid {
+            comment: "The cumulative cost of borrowing over the entire lifespan of the loan, representing the sum total of all interest charges.";
+        };
+        String totalCost {
+            comment: "The absolute lifetime cost of the debt, calculated as the original loan amount plus the total interest paid.";
+        };
+        String interestRatio {
+            comment: "A financial efficiency metric representing the percentage of the lifetime cost eaten up by interest charges rather than equity.";
+        };
+        String trueCostFactor {
+            comment: "A strategic multiplier that compares the total lifetime cost of the loan back to the original principal amount (indicating how many times over the borrower is paying for the asset).";
+        };
+        String tippingPointMonth {
+            comment: "The exact calendar month during the lifecycle of the loan where the monthly principal allocation permanently eclipses the monthly interest charge.";
+        };
+        String fiveYearEquity {
+            comment: "The total principal paid down by the borrower at the exact 60-month mark, showing real asset ownership after five years.";
+        };
+    }
+)
+properties {
+    comment: "Calculates the month-by-month repayment schedule of a loan based on the principal amount, interest rate, and loan length.";
+}
+{
+    MAP {
+        comment: "This step is used to validate the inputs and ensure they are numeric."
+        TRANSFORM pub.math:toNumber {
+            input {
+                mapSource {
+                    String loanAmount;
+                }
+                mapTarget {
+                    String num;
+                }
+                copy `loanAmount` -> `num`;
+            }
+            output {
+                mapSource {
+                    String num;
+                }
+                mapTarget {
+                    Double nLoanAmount;
+                }
+                copy `num` -> `nLoanAmount`;
+            }
+        }
+        TRANSFORM pub.math:toNumber {
+            input {
+                mapSource {
+                    String interestRate;
+                }
+                mapTarget {
+                    String num;
+                }
+                copy `interestRate` -> `num`;
+            }
+            output {
+                mapSource {
+                    String num;
+                }
+                mapTarget {
+                    Double nInterestRate;
+                }
+                copy `num` -> `nInterestRate`;
+            }
+        }
+        TRANSFORM pub.math:toNumber {
+            input {
+                mapSource {
+                    String termYears;
+                }
+                mapTarget {
+                    String num;
+                    String convertAs;
+                }
+                copy `termYears` -> `num`;
+                set `convertAs` = "java.math.BigInteger";
+            }
+            output {
+                mapSource {
+                    String num;
+                }
+                mapTarget {
+                    Integer nTermYears;
+                }
+                copy `num` -> `nTermYears`;
+            }
+        }
+    }
+    INVOKE Loans:CalculateMonthlyInterestRate {
+        input {
+            copy `interestRate` -> `interestRate`;
+        }
+        output {
+            copy `monthlyInterest` -> `monthlyInterest`;
+        }
+    }
+    INVOKE pub.math:multiplyInts {
+        input {
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy `termYears` -> `num1`;
+            set `num2` = "12";
+        }
+        output {
+            mapTarget {
+                String totalNumberOfPayments;
+            }
+            copy `value` -> `totalNumberOfPayments`;
+        }
+    }
+    INVOKE Loans:CalculateFixedMonthlyPrincipalAndInterestPayment {
+        input {
+            mapTarget {
+                String monthlyInterestRate;
+                String totalMonths;
+            }
+            copy `loanAmount` -> `loanAmount`;
+            copy `monthlyInterest` -> `monthlyInterestRate`;
+            copy `totalNumberOfPayments` -> `totalMonths`;
+        }
+        output {
+            mapTarget {
+                String fixedMonthlyPayment;
+            }
+            copy `payment` -> `fixedMonthlyPayment`;
+        }
+    }
+    MAP {
+        mapTarget {
+            String currentBalance;
+            String cumulativeInterest;
+            String cumulativePrincipal;
+            String month;
+            recordList AmortizationScheduleAccum {
+                String Deleteme;
+            };
+            String fiveYearEquityHold;
+            Double monthlyPrincipalPaidHold;
+            Double monthlyInterestOwedHold;
+            Integer iterationCountHold;
+            Integer tippingPointMonthHold;
+        }
+        copy `loanAmount` -> `currentBalance`;
+        set `cumulativeInterest` = "0";
+        set `cumulativePrincipal` = "0";
+        set `month` = "0";
+        set `AmortizationScheduleAccum` = [{`Deleteme`:"0"}];
+        copy `loanAmount` -> `fiveYearEquityHold`;
+        set `monthlyPrincipalPaidHold` = 0.0;
+        set `monthlyInterestOwedHold` = 0.0;
+        set `iterationCountHold` = 1;
+        set `tippingPointMonthHold` = 1;
+        drop `nLoanAmount`;
+        drop `nInterestRate`;
+        drop `nTermYears`;
+    }
+    WHILE (month < totalNumberOfPayments) {
+        maxIteration: -1
+        MAP {
+            mapTarget {
+                record AmortizationScheduleRow (Loans:AmortizationSchedule) {
+                    allowUnspecifiedFields: true;
+                } {
+                    String paymentNumber;
+                    String paymentAmount;
+                    String interestAmount;
+                    String principalAmount;
+                    String endingBalance;
+                };
+            }
+            set `AmortizationScheduleRow`/`paymentNumber` = "0";
+            set `AmortizationScheduleRow`/`paymentAmount` = "0";
+            set `AmortizationScheduleRow`/`interestAmount` = "0";
+            set `AmortizationScheduleRow`/`principalAmount` = "0";
+            set `AmortizationScheduleRow`/`endingBalance` = "0";
+        }
+        MAP {
+            TRANSFORM pub.math:multiplyFloats {
+                input {
+                    mapSource {
+                        String currentBalance;
+                        String monthlyInterest;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                        String precision;
+                    }
+                    copy `currentBalance` -> `num1`;
+                    copy `monthlyInterest` -> `num2`;
+                    set `precision` = "2";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String monthlyInterestOwed;
+                    }
+                    copy `value` -> `monthlyInterestOwed`;
+                }
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:subtractFloats {
+                input {
+                    mapSource {
+                        String fixedMonthlyPayment;
+                        String monthlyInterestOwed;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                        String precision;
+                    }
+                    copy `fixedMonthlyPayment` -> `num1`;
+                    copy `monthlyInterestOwed` -> `num2`;
+                    set `precision` = "2";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String monthlyPrincipalPaid;
+                    }
+                    copy `value` -> `monthlyPrincipalPaid`;
+                }
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:subtractFloats {
+                input {
+                    mapSource {
+                        String currentBalance;
+                        String monthlyPrincipalPaid;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                        String precision;
+                    }
+                    copy `currentBalance` -> `num1`;
+                    copy `monthlyPrincipalPaid` -> `num2`;
+                    set `precision` = "2";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String currentBalance;
+                    }
+                    copy `value` -> `currentBalance`;
+                }
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:addFloats {
+                input {
+                    mapSource {
+                        String cumulativeInterest;
+                        String monthlyInterestOwed;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                        String precision;
+                    }
+                    copy `cumulativeInterest` -> `num1`;
+                    copy `monthlyInterestOwed` -> `num2`;
+                    set `precision` = "2";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String cumulativeInterest;
+                    }
+                    copy `value` -> `cumulativeInterest`;
+                }
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:addFloats {
+                input {
+                    mapSource {
+                        String cumulativePrincipal;
+                        String monthlyPrincipalPaid;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                        String precision;
+                    }
+                    copy `cumulativePrincipal` -> `num1`;
+                    copy `monthlyPrincipalPaid` -> `num2`;
+                    set `precision` = "2";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        String cumulativePrincipal;
+                    }
+                    copy `value` -> `cumulativePrincipal`;
+                }
+            }
+        }
+        MAP {
+            copy `$iterationCount` -> `AmortizationScheduleRow`/`paymentNumber`;
+            TRANSFORM pub.string:numericFormat {
+                input {
+                    mapSource {
+                        String fixedMonthlyPayment;
+                    }
+                    mapTarget {
+                        String num;
+                        String `pattern`;
+                    }
+                    copy `fixedMonthlyPayment` -> `num`;
+                    set `pattern` = "$#,##0.00";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        record AmortizationScheduleRow;
+                    }
+                    copy `value` -> `AmortizationScheduleRow`/`paymentAmount`;
+                }
+            }
+            TRANSFORM pub.string:numericFormat {
+                input {
+                    mapSource {
+                        String monthlyInterestOwed;
+                    }
+                    mapTarget {
+                        String num;
+                        String `pattern`;
+                    }
+                    copy `monthlyInterestOwed` -> `num`;
+                    set `pattern` = "$#,##0.00";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        record AmortizationScheduleRow;
+                    }
+                    copy `value` -> `AmortizationScheduleRow`/`interestAmount`;
+                }
+            }
+            TRANSFORM pub.string:numericFormat {
+                input {
+                    mapSource {
+                        String monthlyPrincipalPaid;
+                    }
+                    mapTarget {
+                        String num;
+                        String `pattern`;
+                    }
+                    copy `monthlyPrincipalPaid` -> `num`;
+                    set `pattern` = "$#,##0.00";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        record AmortizationScheduleRow;
+                    }
+                    copy `value` -> `AmortizationScheduleRow`/`principalAmount`;
+                }
+            }
+            TRANSFORM pub.string:numericFormat {
+                input {
+                    mapSource {
+                        String currentBalance;
+                    }
+                    mapTarget {
+                        String num;
+                        String `pattern`;
+                    }
+                    copy `currentBalance` -> `num`;
+                    set `pattern` = "$#,##0.00";
+                }
+                output {
+                    mapSource {
+                        String value;
+                    }
+                    mapTarget {
+                        record AmortizationScheduleRow;
+                    }
+                    copy `value` -> `AmortizationScheduleRow`/`endingBalance`;
+                }
+            }
+            TRANSFORM pub.math:toNumber {
+                input {
+                    mapSource {
+                        String monthlyPrincipalPaid;
+                    }
+                    mapTarget {
+                        String num;
+                    }
+                    copy `monthlyPrincipalPaid` -> `num`;
+                }
+                output {
+                    mapSource {
+                        String num;
+                    }
+                    mapTarget {
+                        Double monthlyPrincipalPaidHold;
+                    }
+                    copy `num` -> `monthlyPrincipalPaidHold`;
+                }
+            }
+            TRANSFORM pub.math:toNumber {
+                input {
+                    mapSource {
+                        String monthlyInterestOwed;
+                    }
+                    mapTarget {
+                        String num;
+                    }
+                    copy `monthlyInterestOwed` -> `num`;
+                }
+                output {
+                    mapSource {
+                        String num;
+                    }
+                    mapTarget {
+                        Double monthlyInterestOwedHold;
+                    }
+                    copy `num` -> `monthlyInterestOwedHold`;
+                }
+            }
+            TRANSFORM pub.math:toNumber {
+                input {
+                    mapTarget {
+                        String num;
+                        String convertAs;
+                    }
+                    copy `$iterationCount` -> `num`;
+                    set `convertAs` = "java.lang.Integer";
+                }
+                output {
+                    mapSource {
+                        String num;
+                    }
+                    mapTarget {
+                        Integer iterationCountHold;
+                    }
+                    copy `num` -> `iterationCountHold`;
+                }
+            }
+        }
+        BRANCH {
+            evaluateLabels: true
+            SEQUENCE {
+                label: "%tippingPointMonthHold% == 1 && %monthlyPrincipalPaidHold% > %monthlyInterestOwedHold%"
+                BRANCH {
+                    evaluateLabels: true
+                    MAP {
+                        label: "%iterationCountHold% > 1"
+                        TRANSFORM pub.math:toNumber {
+                            input {
+                                mapTarget {
+                                    String num;
+                                    String convertAs;
+                                }
+                                copy `$iterationCount` -> `num`;
+                                set `convertAs` = "java.lang.Integer";
+                            }
+                            output {
+                                mapSource {
+                                    String num;
+                                }
+                                mapTarget {
+                                    Integer tippingPointMonthHold;
+                                }
+                                copy `num` -> `tippingPointMonthHold`;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        INVOKE pub.document:insertDocument {
+            input {
+                mapTarget {
+                    recordList documents {
+                        allowUnspecifiedFields: true;
+                    };
+                    record insertDocument {
+                        allowUnspecifiedFields: true;
+                    };
+                }
+                copy `AmortizationScheduleAccum` -> `documents`;
+                copy `AmortizationScheduleRow` -> `insertDocument`;
+            }
+            output {
+                mapTarget {
+                    recordList AmortizationScheduleAccum {
+                        allowUnspecifiedFields: true;
+                    } {
+                        String Deleteme;
+                    };
+                }
+                copy `documents` -> `AmortizationScheduleAccum`;
+            }
+        }
+        IF ($iterationCount == 60) {
+            MAP {
+                copy `cumulativePrincipal` -> `fiveYearEquityHold`;
+            }
+        }
+        MAP {
+            copy `$iterationCount` -> `month`;
+            drop `AmortizationScheduleRow`;
+        }
+    }
+    MAP {
+        TRANSFORM pub.document:deleteDocuments {
+            input {
+                mapSource {
+                    recordList AmortizationScheduleAccum;
+                }
+                mapTarget {
+                    String[] indices;
+                    recordList documents;
+                }
+                set `indices` = ["0"];
+                copy `AmortizationScheduleAccum` -> `documents`;
+            }
+            output {
+                mapSource {
+                    recordList documents;
+                }
+                mapTarget {
+                    recordList AmortizationScheduleAccum;
+                }
+                copy `documents` -> `AmortizationScheduleAccum`;
+            }
+        }
+        TRANSFORM pub.math:addFloats {
+            input {
+                mapSource {
+                    String cumulativeInterest;
+                    String loanAmount;
+                }
+                mapTarget {
+                    String num1;
+                    String precision;
+                    String num2;
+                }
+                copy `cumulativeInterest` -> `num1`;
+                set `precision` = "2";
+                copy `loanAmount` -> `num2`;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String totalCost;
+                }
+                copy `value` -> `totalCost`;
+            }
+        }
+    }
+    MAP {
+        TRANSFORM pub.math:divideFloats {
+            input {
+                mapSource {
+                    String cumulativeInterest;
+                    String totalCost;
+                }
+                mapTarget {
+                    String precision;
+                    String num1;
+                    String num2;
+                }
+                set `precision` = "2";
+                copy `cumulativeInterest` -> `num1`;
+                copy `totalCost` -> `num2`;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String interestRatio;
+                }
+                copy `value` -> `interestRatio`;
+            }
+        }
+        TRANSFORM pub.math:divideFloats {
+            input {
+                mapSource {
+                    String totalCost;
+                    String loanAmount;
+                }
+                mapTarget {
+                    String precision;
+                    String num1;
+                    String num2;
+                }
+                set `precision` = "2";
+                copy `totalCost` -> `num1`;
+                copy `loanAmount` -> `num2`;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String trueCostFactor;
+                }
+                copy `value` -> `trueCostFactor`;
+            }
+        }
+        TRANSFORM pub.string:objectToString {
+            input {
+                mapSource {
+                    Integer tippingPointMonthHold;
+                }
+                mapTarget {
+                    String object;
+                }
+                copy `tippingPointMonthHold` -> `object`;
+            }
+            output {
+                mapSource {
+                    String string;
+                }
+                mapTarget {
+                    String tippingPointMonth;
+                }
+                copy `string` -> `tippingPointMonth`;
+            }
+        }
+    }
+    MAP {
+        mapTarget {
+            recordList AmortizationSchedule {
+                allowUnspecifiedFields: true;
+            };
+        }
+        copy `AmortizationScheduleAccum` -> `AmortizationSchedule`;
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String fiveYearEquityHold;
+                }
+                mapTarget {
+                    String num;
+                    String `pattern`;
+                }
+                copy `fiveYearEquityHold` -> `num`;
+                set `pattern` = "$#,##0.00";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String fiveYearEquity;
+                }
+                copy `value` -> `fiveYearEquity`;
+            }
+        }
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String cumulativeInterest;
+                }
+                mapTarget {
+                    String num;
+                    String `pattern`;
+                }
+                copy `cumulativeInterest` -> `num`;
+                set `pattern` = "$#,##0.00";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String totalInterestPaid;
+                }
+                copy `value` -> `totalInterestPaid`;
+            }
+        }
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String totalCost;
+                }
+                mapTarget {
+                    String num;
+                    String `pattern`;
+                }
+                copy `totalCost` -> `num`;
+                set `pattern` = "$#,##0.00";
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String totalCost;
+                }
+                copy `value` -> `totalCost`;
+            }
+        }
+        drop `documents`;
+        drop `insertDocument`;
+        drop `num1`;
+        drop `num2`;
+        drop `loanAmount`;
+        drop `interestRate`;
+        drop `termYears`;
+        drop `AmortizationScheduleAccum`;
+        drop `monthlyInterestRate`;
+        drop `totalMonths`;
+        drop `monthlyInterest`;
+        drop `value`;
+        drop `totalNumberOfPayments`;
+        drop `iterationCountHold`;
+        drop `monthlyInterestOwedHold`;
+        drop `monthlyPrincipalPaidHold`;
+        drop `fiveYearEquityHold`;
+        drop `monthlyPrincipalPaid`;
+        drop `cumulativePrincipal`;
+        drop `cumulativeInterest`;
+        drop `month`;
+        drop `payment`;
+        drop `currentBalance`;
+        drop `monthlyInterestOwed`;
+        TRANSFORM pub.string:numericFormat {
+            input {
+                mapSource {
+                    String fixedMonthlyPayment;
+                }
+                mapTarget {
+                    String `pattern`;
+                    String num;
+                }
+                set `pattern` = "$#,##0.00";
+                copy `fixedMonthlyPayment` -> `num`;
+            }
+            output {
+                mapSource {
+                    String value;
+                }
+                mapTarget {
+                    String fixedMonthlyPayment;
+                }
+                copy `value` -> `fixedMonthlyPayment`;
+            }
+        }
+        drop `tippingPointMonthHold`;
+    }
+}

@@ -1,0 +1,99 @@
+interface testFlows
+
+service processOrderItems (
+    input {
+        recordList items {
+            String productId;
+            Integer quantity;
+            Double price;
+        };
+    }
+    output {
+        Double totalAmount;
+        Integer itemCount;
+    }
+) {
+    MAP {
+        mapTarget {
+            Double totalAmount;
+            Integer itemCount;
+        }
+        set totalAmount = 0;
+        set itemCount = 0;
+    }
+    LOOP {
+        inputArray: "/items"
+        MAP {
+        INVOKE pub.math:multiplyFloats {
+            input {
+                mapSource {
+                    recordList items {
+                        Integer quantity;
+                        Double price;
+                    };
+                }
+                mapTarget {
+                    String num1;
+                    String num2;
+                }
+                copy items/quantity -> num1;
+                copy items/price -> num2;
+            }
+            output {
+                mapTarget {
+                    String lineTotal;
+                }
+                copy `value` -> lineTotal;
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:addObjects {
+                input {
+                    mapSource {
+                        Double totalAmount;
+                        Double lineTotal;
+                    }
+                    mapTarget {
+                        String num1;
+                        String num2;
+                    }
+                    copy totalAmount -> num1;
+                    copy lineTotal -> num2;
+                }
+                output {
+                    mapSource {
+                        String `value`;
+                    }
+                    mapTarget {
+                        Double totalAmount;
+                    }
+                    copy `value` -> totalAmount;
+                }
+            }
+        }
+        MAP {
+            TRANSFORM pub.math:addInts {
+                input {
+                    mapSource {
+                        Integer itemCount;
+                    }
+                    mapTarget {
+                        Integer num1;
+                        Integer num2;
+                    }
+                    copy itemCount -> num1;
+                    set num2 = 1;
+                }
+                output {
+                    mapSource {
+                        Integer `value`;
+                    }
+                    mapTarget {
+                        Integer itemCount;
+                    }
+                    copy `value` -> itemCount;
+                }
+            }
+        }
+    }
+}

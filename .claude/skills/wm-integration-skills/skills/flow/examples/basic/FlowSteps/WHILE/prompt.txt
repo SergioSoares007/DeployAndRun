@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called whileLoopDouble that utilizes a WHILE loop and does doubling a counter value (Y) by adding 2 in each iteration until the loop counter reaches the input value X, using pub.math:addInts.
+
+Insert the file in this folder the file extension should be .flow

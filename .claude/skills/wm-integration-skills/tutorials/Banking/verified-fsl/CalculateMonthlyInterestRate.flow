@@ -1,0 +1,65 @@
+interface Loans
+
+service CalculateMonthlyInterestRate (
+    input {
+        String interestRate {
+            allowNull: false;
+        };
+    }
+    output {
+        String monthlyInterest;
+    }
+)
+{
+    INVOKE pub.math:divideFloats {
+        input {
+            mapSource {
+                String interestRate;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy interestRate -> num1;
+            set num2 = "100";
+        }
+        output {
+            mapSource {
+                String `value`;
+            }
+            mapTarget {
+                String interestPct;
+            }
+            copy `value` -> interestPct;
+        }
+    }
+    INVOKE pub.math:divideFloats {
+        input {
+            mapSource {
+                String interestPct;
+            }
+            mapTarget {
+                String num1;
+                String num2;
+            }
+            copy interestPct -> num1;
+            set num2 = "12";
+        }
+        output {
+            mapSource {
+                String `value`;
+            }
+            mapTarget {
+                String monthlyInterest;
+            }
+            copy `value` -> monthlyInterest;
+            drop `value`;
+        }
+    }
+    MAP {
+        drop interestPct;
+        drop interestRate;
+        drop num2;
+        drop num1;
+    }
+}

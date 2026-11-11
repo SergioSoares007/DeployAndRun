@@ -1,0 +1,4 @@
+Please read the system instructions in the skills folder. Then generate FSL based on the following request:
+Create a new flow service called tryFinallyExample that utilizes TRY-FINALLY blocks and does addition of two integers with guaranteed cleanup/logging in the FINALLY block, using pub.math:addInts and pub.flow:debugLog.
+
+Insert the file in this folder the file extension should be .flow
