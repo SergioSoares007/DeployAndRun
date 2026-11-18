@@ -36,8 +36,6 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 
 ---
-Tens razão. Desviei o artigo para Spring Boot e incluí referências que prejudicaram a leitura. Segue uma versão centrada nos pilares Java do webMethods.
-
 # Inside IBM webMethods: The Java Foundations Behind the Platform
 
 Running an enterprise integration platform involves more than executing business logic. Software modules must be loaded, dependencies resolved, services exposed, users authenticated and Java processes supervised.
