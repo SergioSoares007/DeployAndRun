@@ -36,193 +36,213 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 
 ---
-# Understanding the Java Foundations Behind IBM webMethods
+Tens razão. Desviei o artigo para Spring Boot e incluí referências que prejudicaram a leitura. Segue uma versão centrada nos pilares Java do webMethods.
 
-*How OSGi, Tomcat, JAAS, Spring and the Java Service Wrapper fit together—and where Spring Boot enters the picture.*
+# Inside IBM webMethods: The Java Foundations Behind the Platform
 
-Enterprise Java platforms combine several technologies, each responsible for a different part of application execution. IBM webMethods is an example: its documentation refers to the Common Platform, Runtime, Security Infrastructure, Web Services Stack and Java Service Wrapper.
+Running an enterprise integration platform involves more than executing business logic. Software modules must be loaded, dependencies resolved, services exposed, users authenticated and Java processes supervised.
 
-These names describe different architectural responsibilities. Some are IBM components, some are independent software projects, and others are specifications used across the Java ecosystem.
+IBM webMethods combines several technologies to address these responsibilities. Its infrastructure documentation introduces five closely related elements: **Common Platform, Runtime, Security Infrastructure, Web Services Stack and Java Service Wrapper**.
 
-Understanding that distinction makes the architecture easier to navigate—and helps when developing, configuring or troubleshooting applications.
+Understanding their roles helps explain how the platform is assembled—and where to look when something goes wrong.
 
-## Standards, frameworks and products
+## A platform built from several layers
 
-A **standard or specification** defines contracts and expected behaviour. A **software implementation** provides executable code that implements those contracts. A **framework** supplies reusable functionality for building applications. A **product platform** assembles technologies into a supported environment.
+These components operate at different levels of the architecture.
 
-Open source is a separate characteristic: software can be open source without being a standard.
-
-| Technology | Category | Purpose |
+| Component | Main responsibility | Underlying technology |
 |---|---|---|
-| **OSGi** | Specifications | Define a dynamic module system for Java. |
-| **JAAS** | Java APIs and architecture | Provide pluggable authentication and security identities. |
-| **HTTP, XML, SOAP, WSDL, WS-\*** | Protocols and specifications | Define communication, message formats and service contracts. |
-| **Apache Tomcat** | Open-source implementation | Provides a web server and servlet container. |
-| **Spring Framework** | Open-source framework | Supports application composition, web development, data access and transactions. |
-| **Spring Boot** | Open-source project built on Spring | Simplifies application configuration, packaging and startup. |
-| **Java Service Wrapper** | Software product from Tanuki | Starts and supervises Java processes. |
-| **IBM webMethods platform components** | IBM software components | Assemble and extend these technologies for IBM products. |
+| **Common Platform** | Provides a modular foundation for product instances. | OSGi |
+| **webMethods Runtime** | Hosts applications and brings shared runtime capabilities together. | Common Platform, Tomcat, Spring and other components |
+| **Security Infrastructure** | Provides reusable authentication and identity-related functionality. | JAAS |
+| **Web Services Stack** | Creates, configures, deploys and manages web services. | XML, SOAP, WSDL and WS-* specifications |
+| **Java Service Wrapper** | Starts, stops and supervises the Java process. | Tanuki Java Service Wrapper |
 
-For example, OSGi defines a vendor-independent approach to Java modularity. IBM webMethods Common Platform uses that approach, but the Common Platform itself is an IBM component. [www.osgi.org](https://www.osgi.org/resources/what-is-osgi/?utm_source=chatgpt.com)
+The IBM components integrate established Java technologies and industry specifications. OSGi and SOAP are specifications; Tomcat and the Tanuki Wrapper are software implementations; Common Platform and webMethods Runtime are IBM platform components.
 
-## Common Platform: organising the application
+That distinction matters: a product may implement a standard while retaining its own configuration, packaging and operational behaviour.
 
-The **IBM webMethods Common Platform** provides an OSGi-based foundation for constructing executable product instances.
+## OSGi and Common Platform: managing modularity
 
-OSGi introduces modules called *bundles*. These have explicit dependencies and a managed lifecycle, allowing components to be installed, started, stopped, updated or removed dynamically.
+Large Java applications depend on many libraries. As a platform grows, managing their visibility, dependencies and lifecycle becomes increasingly important.
 
-The value is control over how software components are assembled and interact. Rather than treating the entire application as one undifferentiated collection of JAR files, the platform can manage individual modules and their dependencies.
+**OSGi provides a modular architecture for Java.** Its deployment units, known as *bundles*, declare information such as the packages they expose and the packages they require.
 
-However, support for dynamic updates does not mean every product change can be applied without restarting. That depends on the component, its dependencies and the product’s supported procedures.
+This gives the runtime an explicit model of component dependencies, rather than relying solely on a shared collection of JAR files.
 
+IBM webMethods Common Platform uses OSGi to construct executable instances of products. Its documented capabilities include installing, starting, stopping, updating and uninstalling components dynamically, without requiring a reboot of the environment.
 
+### Why this matters operationally
 
-## Runtime: bringing the components together
+Modularity introduces a distinction between a Java process being alive and its components being available.
 
-The **IBM webMethods Runtime** is a runnable instance of the Common Platform environment. It hosts web applications and integrates several capabilities:
+A JVM may be running while a required module has failed to resolve its dependencies or complete its initialisation. In that situation, the process exists, but part of the application may remain unavailable.
+
+For troubleshooting, this means asking two separate questions:
+
+1. Has the Java process started?
+2. Have the required platform components loaded and started successfully?
+
+OSGi supports dynamic lifecycle management, but this should not be interpreted as a guarantee that every product change is supported without a restart. Product procedures and component dependencies still determine what can safely be changed at runtime.
+
+## webMethods Runtime: assembling the execution environment
+
+The **IBM webMethods Runtime** is a runnable instance of the Common Platform environment. It hosts web applications and combines several shared capabilities:
 
 - A web server based on **Apache Tomcat**.
 - **Security Infrastructure** for authentication.
 - **Web Services Stack** for web service functionality.
-- **Digital Event Services** for exchanging application and system events.
+- **Digital Event Services** for exchanging structured events.
 - **Spring Framework**.
 
-The following diagram shows these conceptual relationships. It is an architectural overview, rather than an exact process or deployment layout for every webMethods product.
+These technologies fulfil complementary roles. Tomcat provides web infrastructure, Security Infrastructure handles authentication concerns, and Web Services Stack processes service interactions. Spring contributes application framework capabilities within that environment.
 
-```mermaid
-flowchart TD
-    W["Java Service Wrapper"] -->|"Starts and supervises"| J["JVM"]
-    J -->|"Executes"| C["Common Platform: OSGi-based foundation"]
-    C -->|"Supports"| R["webMethods Runtime"]
-    R --> T["Tomcat"]
-    R --> S["Security Infrastructure"]
-    R --> WS["Web Services Stack"]
-    R --> F["Spring Framework"]
-    R --> E["Digital Event Services"]
-```
+Digital Event Services enables products to exchange typed, serialised data structures. These events can carry business information, such as the state of a process step, or system information, such as memory usage and thread counts.
 
-An important detail is that **webMethods products do not all use the complete Runtime in the same way**. The documentation identifies EntireX, Application Platform and CentraSite as Runtime users, while Integration Server uses instances of parts of the Runtime in product-specific profiles.
+### Shared infrastructure does not mean identical products
 
-Consequently, finding a component in the Runtime documentation does not establish that every Integration Server function uses it.
+The Runtime documentation identifies EntireX, Application Platform and CentraSite as users of webMethods Runtime. It also explains that other products, including Integration Server, use instances of parts of the Runtime in product-specific profiles.
 
+This is an important architectural boundary.
 
+**The Runtime describes shared infrastructure; it does not imply that every webMethods product has the same internal architecture.** The presence of a component in the shared platform does not establish that every endpoint or feature of a particular product uses it.
 
-## Tomcat: handling web requests
+## Tomcat: the web execution layer
 
-Apache Tomcat provides the web execution infrastructure. It implements technologies such as Servlet, Pages and WebSocket, with the supported specification versions depending on the Tomcat release. [Which Version Do I Want?](https://tomcat.apache.org/whichversion?utm_source=chatgpt.com)
+Within webMethods Runtime, the web server is based on Apache Tomcat.
 
-In a servlet-based application, Tomcat accepts HTTP connections and dispatches requests to the appropriate application handlers.
+Tomcat provides the infrastructure for hosting servlet-based web applications and processing their HTTP interactions. It handles concerns such as accepting connections and dispatching requests to application handlers.
 
-That responsibility differs from the application’s business logic. Tomcat provides the environment in which that logic is reached; it does not define what processing an order or retrieving a customer should do.
+Business functionality sits above that infrastructure. Receiving an HTTP request and executing the application operation are related activities, but they belong to different responsibilities.
 
-Likewise, the presence of Tomcat inside a platform does not mean every network endpoint in that platform is handled by Tomcat.
+This distinction is useful during diagnosis. A successful connection to a port proves that something is listening; it does not establish that the target application has initialised correctly or that the requested operation can execute.
 
-## Security Infrastructure: separating authentication from application logic
+For an individual webMethods product, the actual request path must be established from its architecture and configuration. Tomcat’s presence in the shared Runtime should not be used to infer ownership of every HTTP listener.
 
-The **IBM webMethods Security Infrastructure** builds on JAAS to provide reusable authentication components and access to user, group and role information.
+## Security Infrastructure: reusable authentication through JAAS
 
-Its central idea is that applications should not have to implement their own authentication mechanism for every user repository.
+Enterprise applications often need to authenticate against different identity repositories. Embedding repository-specific authentication code throughout an application makes that application harder to maintain.
 
-The main concepts are:
+**IBM webMethods Security Infrastructure** addresses this through reusable security components based on the Java Authentication and Authorization Service, or **JAAS**.
 
-| Concept | Responsibility |
+The infrastructure supports user authentication, role management, and queries for user, group and role information. It can be used by both client-side and server-side applications.
+
+### The main JAAS concepts
+
+| Concept | Role |
 |---|---|
-| **LoginModule** | Implements a particular authentication mechanism. |
-| **LoginContext** | Coordinates the configured login modules. |
-| **JAAS configuration** | Defines the modules, options and control flags used by a login context. |
-| **Subject** | Groups security information for an entity. |
-| **Principal** | Represents an identity associated with that entity. |
+| **LoginModule** | Implements an authentication mechanism or related security lookup. |
+| **LoginContext** | Coordinates the login modules configured for an authentication process. |
+| **JAAS configuration file** | Defines login contexts, modules and their configuration. |
+| **Subject** | Groups identity and security information for an entity. |
+| **Principal** | Represents an identity associated with a Subject. |
 
-During authentication, configured login modules validate the supplied information. When authentication succeeds, the Subject is populated with the relevant Principals and credentials. [docs.oracle.com](https://docs.oracle.com/en/java/javase/26/security/java-authentication-authorization-service-jaas-reference-guide.html?utm_source=chatgpt.com)
+An application creates a LoginContext and invokes its login operation. The context executes the configured modules according to the JAAS configuration.
 
-Authentication and authorisation remain distinct:
+When authentication succeeds, the modules associate the relevant Principals and credentials with a Subject, which the application can then retrieve.
 
-- **Authentication:** Who are you?
-- **Authorisation:** What are you allowed to do?
+This separates the application’s use of authentication from the implementation of the authentication mechanism. A configured module can work with a particular repository without requiring the application to contain that repository’s authentication logic.
 
-A successful login establishes an identity. Access to a particular operation still depends on the application’s permissions and enforcement mechanisms.
+### Authentication and access permissions
 
+Establishing an identity is only part of securing an application.
 
+Authentication determines who the caller is. Authorisation determines which operations that caller may perform.
 
-## Web Services Stack: implementing service protocols
+A successful login therefore does not, by itself, prove that a user can invoke a particular service. The application’s access-control configuration must also permit the operation.
 
-The **IBM webMethods Web Services Stack** provides tools for creating, configuring, deploying and managing web services.
+## Web Services Stack: implementing service contracts and messaging
 
-Its documented standards focus on the XML and SOAP ecosystem:
+The **IBM webMethods Web Services Stack** is a toolkit for creating, configuring, deploying and managing web services.
 
-| Standard | Purpose |
+It handles the processing of request and response messages and provides configuration capabilities for areas such as addressing, security and transactional behaviour.
+
+Its documented standards place it firmly within the XML and SOAP web services ecosystem.
+
+| Standard or specification | Responsibility |
 |---|---|
-| **SOAP** | Defines XML-based messaging. |
-| **WSDL** | Describes service interfaces and bindings. |
-| **WS-Addressing** | Provides message addressing information. |
-| **WS-Security Policy** | Expresses security requirements. |
-| **WS-ReliableMessaging** | Defines mechanisms for reliable message delivery. |
-| **MTOM/XOP** | Supports efficient transmission of binary content with XML messages. |
+| **XML and XML Schema** | Represent data and define its structure. |
+| **WSDL** | Describe service interfaces and bindings. |
+| **SOAP** | Define the messaging envelope and processing model. |
+| **WS-Addressing** | Carry message addressing information. |
+| **WS-Policy** | Express service capabilities and requirements. |
+| **WS-Security Policy** | Express message-security requirements. |
+| **WS-ReliableMessaging** | Define reliable messaging mechanisms. |
+| **SwA and MTOM/XOP** | Support attachments and binary content. |
 
-These standards address different concerns. A service contract, message destination and security requirement are separate pieces of information, even when they appear in the same service interaction.
+### Several contracts must agree
 
-Supporting a standard also does not mean its features are automatically enabled for every service. Configuration and compatibility still matter.
+A web service interaction involves more than reaching the correct URL.
 
+The client and server must agree on the service binding, message structure and any required addressing or security information. Transport connectivity can succeed while message processing fails because one of those expectations is not met.
 
+This is why SOAP troubleshooting should examine the service contract and the actual message together:
 
-## Spring Framework and Spring Boot
+- Does the message match the expected SOAP binding?
+- Does its body match the operation’s schema?
+- Is the required action information present?
+- Are addressing and security requirements satisfied?
 
-**Yes: Spring Framework is the foundation on which Spring Boot is built.**
+Supporting a specification means the stack provides the relevant capability. Individual services still need compatible configuration.
 
-Spring Framework provides core application capabilities, including dependency injection, transaction management, data access and web programming. Dependency injection allows the framework to create application objects and supply their dependencies, reducing the amount of object construction and wiring performed manually. [spring.io](https://spring.io/projects/spring-framework/?utm_source=chatgpt.com)
+The documentation also allows for deployment in the Stack’s default servlet container or in an application server. Deployment context therefore matters when investigating configuration and runtime behaviour.
 
-Spring Boot builds on this foundation and simplifies assembling and running a Spring application.
+## Tanuki Java Service Wrapper: managing the JVM
 
-| Spring Framework | Spring Boot |
+The components above execute within Java. The **Tanuki Java Service Wrapper** manages the Java process itself.
+
+Some IBM products use it to start and stop their JVMs, supply startup parameters and capture console output. Depending on configuration, it can also monitor the JVM and trigger recovery actions.
+
+Its role is operational: it manages the execution of the Java application rather than implementing its business services.
+
+### JVM startup configuration
+
+The Wrapper can supply parameters such as heap settings and classpath.
+
+This creates an important distinction between Java installed on the operating system and Java actually used by a running product. When investigating runtime behaviour, the relevant Java executable and options are those selected by the product’s startup configuration.
+
+### The value of `wrapper.log`
+
+The Wrapper records JVM console output in **`wrapper.log`**.
+
+This can include:
+
+- Messages written to standard output and standard error.
+- Exception stack traces.
+- Generated thread dumps.
+
+This is particularly useful when a product runs as a Windows service, where an interactive console is normally unavailable.
+
+The wrapper log and the application’s own logs serve different purposes. Application logs describe events recorded through product logging facilities; the wrapper log captures process-level console output that may contain additional diagnostic evidence.
+
+### Monitoring and recovery
+
+The Wrapper can monitor for conditions such as:
+
+- A JVM that stops responding to its monitoring requests.
+- Thread deadlocks.
+- Specific strings appearing in console output, including configured error indicators.
+
+Recovery behaviour depends on the product configuration. IBM’s documentation explicitly notes that some products disable JVM responsiveness monitoring and that deadlock detection is disabled by default for most products.
+
+**A running Wrapper is therefore not proof that every monitoring feature is active.**
+
+Likewise, process responsiveness and business-service health are different measures. A JVM can respond to monitoring while a particular application operation is failing.
+
+## Using these pillars during troubleshooting
+
+The architecture becomes especially useful when a symptom is mapped to the responsibility most likely to explain it.
+
+| Symptom | Relevant starting point |
 |---|---|
-| Provides application programming capabilities. | Configures and assembles those capabilities with useful defaults. |
-| Manages application objects and their dependencies. | Adds auto-configuration based on dependencies and existing configuration. |
-| Supports web applications and other application types. | Supports convenient packaging and executable applications. |
+| JVM does not start | Wrapper output, Java executable and startup parameters. |
+| Process starts but a component is unavailable | Platform initialisation and module dependency diagnostics. |
+| Web application cannot be reached | Listener configuration, deployment state and request routing. |
+| Authentication fails | Login context, login modules and identity repository. |
+| Authentication succeeds but access is denied | Application permissions and access-control configuration. |
+| SOAP request reaches the server but fails | Binding, message structure, addressing and security requirements. |
+| JVM restarts unexpectedly | Wrapper diagnostics, configured recovery rules and JVM output. |
 
-Boot’s auto-configuration is conditional. It examines the dependencies and configuration available, and can back away when the application provides its own components. Its *starters* group related dependencies, while its web support can configure an embedded server. [docs.spring.io](https://docs.spring.io/spring-boot/reference/using/auto-configuration.html?utm_source=chatgpt.com)
+These are starting points for investigation, rather than fixed diagnoses. Product-specific logs and configuration establish which component is actually involved.
 
-For example, a Spring Boot web application can be packaged as an executable JAR:
-
-```bash
-java -jar orders-service.jar
-```
-
-That application can start its embedded Tomcat and initialise the Spring application context as part of startup. Spring Boot also supports other deployment arrangements, including traditional WAR deployment. [github.com](https://github.com/spring-projects/spring-boot/blob/main/README.adoc?utm_source=chatgpt.com)
-
-**Using Spring Framework does not imply using Spring Boot.** The webMethods Runtime documentation lists Spring Framework as a component; that alone does not establish that the Runtime is a Spring Boot application.
-
-OSGi and Spring also address different concerns: OSGi manages modules and their lifecycle, while Spring manages application objects and their dependencies. They can coexist.
-
-## Java Service Wrapper: supervising the process
-
-The **Java Service Wrapper**, developed by Tanuki, operates at the process-management level.
-
-Depending on product configuration, it can:
-
-- Start and stop the JVM.
-- Supply Java startup parameters.
-- Capture console output in `wrapper.log`.
-- Detect an unresponsive JVM.
-- Detect deadlocks or specified console messages.
-- Trigger configured recovery actions.
-
-These capabilities are not universally enabled. The IBM documentation explicitly notes that monitoring behaviour varies by product and that deadlock detection is disabled by default for most products.
-
-The Wrapper also has a practical diagnostic role: when a product runs as a Windows service, `wrapper.log` captures console output that would otherwise be difficult to see, including stack traces and generated thread dumps.
-
-:chatgpt-content-reference{index="11"}
-
-## Applying the architecture to troubleshooting
-
-Knowing each component’s responsibility helps narrow an investigation.
-
-| Symptom | Relevant area to investigate |
-|---|---|
-| Java process does not start | Wrapper output, Java executable and JVM startup options. |
-| Module fails to load | OSGi dependencies and platform diagnostics. |
-| Web request does not reach the application | Listener, connector and application routing. |
-| Login fails | Authentication configuration, login modules and identity repository. |
-| SOAP invocation fails | Binding, message format, addressing and service policies. |
-| Spring application fails during initialisation | Application context, component configuration and dependencies. |
-
-The exact investigation depends on the product and deployment. The architectural distinction remains useful: **process management, module management, web transport, authentication and application composition are separate responsibilities**, even when a platform packages them together.
+Understanding the Java foundations of webMethods makes those investigations more precise. OSGi explains module lifecycle, the Runtime explains how shared capabilities are assembled, JAAS explains pluggable authentication, the Web Services Stack explains service messaging, and Tanuki explains how the Java process is launched and supervised.
